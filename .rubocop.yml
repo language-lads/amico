@@ -1,0 +1,37 @@
+require:
+  - rubocop-rails
+  - rubocop-capybara
+
+AllCops:
+  NewCops: enable
+
+# Don't force a comment at the top of every class
+Style/Documentation:
+  Exclude:
+    - "**/*.rb"
+
+# Allow long code blocks in system tests, since we don't want to be constantly logging in and out
+# Also allow in controllers because parameter permit lists can be long
+Metrics/BlockLength:
+  Exclude:
+    - "test/**/*"
+    - "config/**/*"
+Metrics/ClassLength:
+  Exclude:
+    - "test/**/*"
+Metrics/MethodLength:
+  Exclude:
+    - "test/**/*"
+    - "production/**/*"
+    - "app/controllers/**/*"
+Metrics/AbcSize:
+  Exclude:
+    - "test/**/*"
+Style/ClassVars:
+  Exclude:
+    - "test/**/*"
+
+# Rubocop complains about "task :download_prod => :environment do", but its necessary for rails
+Style/HashSyntax:
+  Exclude:
+    - "lib/tasks/**/*"
