@@ -28,6 +28,7 @@ Metrics/MethodLength:
 Metrics/AbcSize:
   Exclude:
     - "test/**/*"
+    - "db/migrate/**/*"
 Style/ClassVars:
   Exclude:
     - "test/**/*"
