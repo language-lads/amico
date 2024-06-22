@@ -21,4 +21,12 @@ task format: :environment do
   sh 'find app -name "*.html.erb" -exec bundle exec erb-formatter --write {} \;'
 end
 
+task check_format: %i[environment format] do
+  sh 'git diff --exit-code'
+end
+
+task test: %i[environment] do
+  sh 'bundle exec rails test'
+end
+
 Rails.application.load_tasks
