@@ -1,16 +1,11 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  connect() {
-    console.log("connected");
-  }
-
   start() {
-    console.log("microphone start");
     if (!navigator.mediaDevices || !window.MediaRecorder) {
       console.error(
         "MediaDevices API or MediaRecorder API not supported in this browser.",
-      ); 
+      );
       return;
     }
     navigator.mediaDevices
@@ -19,6 +14,7 @@ export default class extends Controller {
         video: false,
       })
       .then(async (stream) => {
+        console.log("Started recording from the microphone");
         window.amicoStream = stream;
         window.amicoStreamContext = new AudioContext();
         await window.amicoStreamContext.audioWorklet.addModule(
@@ -41,7 +37,7 @@ export default class extends Controller {
   }
 
   stop() {
-    console.log("microphone stop");
+    console.log("Stopped recording from the microphone");
     if (window.amicoStream) {
       window.amicoStream.getTracks().forEach((track) => track.stop());
     }

@@ -274,7 +274,7 @@ Devise.setup do |config|
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', scope: 'user,public_repo'
   # config.omniauth :facebook, 'APP_ID', 'APP_SECRET', token_params: { parse: :json }
   config.omniauth :google_oauth2, Rails.application.credentials.oauth.google.client_id!,
-                  Rails.application.credentials.oauth.google.client_secret!, {}
+                  Rails.application.credentials.oauth.google.client_secret!, { prompt: 'select_account' }
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or

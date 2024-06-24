@@ -12,7 +12,7 @@ class AudioSampleProcessor extends AudioWorkletProcessor {
         outputChannel[i] = inputChannel[i];
 
         // Example: Log the first sample of each buffer to the console
-        if (i === 0) console.log("receiving audio data...");
+        if (i === 0) console.log("Receiving audio data...");
       }
     }
     return true;
