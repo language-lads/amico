@@ -1,3 +1,19 @@
-<h1>Home#index</h1>
-<p>Find me in app/views/home/index.html.erb</p>
+<h1>Amico</h1>
+<p>Press start to start recording from the microphone</p>
+<button
+  id="start"
+  data-controller="microphone"
+  data-action="click->microphone#start"
+>Start</button>
+<br/>
+
+<button
+  id="start"
+  data-controller="microphone"
+  data-action="click->microphone#stop"
+>Stop</button>
+
+<br/>
+<br/>
+
 <%= link_to "Sign out", destroy_user_session_path, data: { "turbo-method": :delete } %>
