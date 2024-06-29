@@ -1,18 +1,17 @@
 <h1>Amico</h1>
 <p>Press start to begin recording from the microphone.</p>
 <p>Open the console to see what's happening under the hood.</p>
-<button
-  id="start"
-  data-controller="microphone"
-  data-action="click->microphone#start"
->Start</button>
-<br/>
-
-<button
-  id="start"
-  data-controller="microphone"
-  data-action="click->microphone#stop"
->Stop</button>
+<div data-controller="microphone" data-microphone-is-active-value="false">
+  <button
+    data-action="click->microphone#start"
+    data-microphone-target="startButton"
+  >Start</button>
+  <br/>
+  <button
+    data-action="click->microphone#stop"
+    data-microphone-target="stopButton"
+  >Stop</button>
+</div>
 
 <br/>
 <br/>
