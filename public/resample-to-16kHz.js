@@ -40,9 +40,21 @@ class ResampleTo16kHz extends AudioWorkletProcessor {
    */
   process(inputs, _outputs, _parameters) {
     const input = inputs[0][0];
-    const resampled16kHz = Array.from(this.sampler.full(input));
+    const resampledValues = Array.from(this.sampler.full(input));
+    const timestamp = Date.now() / 1000; // Decimal seconds
 
-    this.buffer.push(...resampled16kHz);
+    // Add timestamps to the resampled values, noting that the
+    // the timestamp above corresponds to last sample in the input
+    const resampledValuesWithTimestamps = resampledValues.map(
+      (value, index) => {
+        return {
+          value,
+          timestamp: timestamp - (resampledValues.length - index) / 16000,
+        };
+      },
+    );
+
+    this.buffer.push(...resampledValuesWithTimestamps);
     if (this.buffer.length >= BUFFER_SIZE) {
       // Take the first BUFFER_SIZE samples
       this.port.postMessage(this.buffer.slice(0, BUFFER_SIZE));

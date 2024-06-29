@@ -7,7 +7,7 @@ export default class extends Controller {
   static values = { isListening: Boolean };
   static targets = ["startButton", "stopButton", "chart"];
 
-  connect() {
+  async connect() {
     this.initialiseChart();
   }
 
@@ -42,7 +42,6 @@ export default class extends Controller {
   stopConversation() {
     this.closeMicrophoneStream();
     this.closeMicrophoneStreamContext();
-    this.stopConversationWorker();
     this.stopChartUpdating();
   }
 
@@ -68,17 +67,6 @@ export default class extends Controller {
     window.amicoStreamContext = undefined;
   }
 
-  startConversationWorker() {
-    if (window.conversationWorker) return;
-    window.conversationWorker = new Worker("workers/conversation.js");
-  }
-
-  stopConversationWorker() {
-    if (!window.conversationWorker) return;
-    window.conversationWorker.terminate();
-    window.conversationWorker = undefined;
-  }
-
   createStreamContext() {
     if (!window.amicoStreamContext) {
       window.amicoStreamContext = new AudioContext(STREAM_CONTEXT_OPTIONS);
@@ -99,7 +87,6 @@ export default class extends Controller {
         console.debug("Created stream context: ", window.amicoStreamContext);
 
         await this.registerModulesForProcessor();
-        this.startConversationWorker();
 
         const resampleNode = new AudioWorkletNode(
           window.amicoStreamContext,
@@ -108,30 +95,15 @@ export default class extends Controller {
         // Make sure the resampler knows about our audio track settings (sample rate etc.)
         resampleNode.port.postMessage(audioTrack.getSettings());
         resampleNode.port.onmessage = (e) => {
-          if (!window.conversationWorker) return;
-          window.conversationWorker.postMessage(e.data);
-        };
-        window.conversationWorker.onmessage = (e) => {
-          this.handleWorkerMessage(e.data);
+          const audioEvent = new CustomEvent("audio", {
+            detail: e.data,
+          });
+          window.dispatchEvent(audioEvent);
         };
         const source =
           window.amicoStreamContext.createMediaStreamSource(stream);
         source.connect(resampleNode);
       });
-  }
-
-  /**
-   * Messages received from the background worker
-   *
-   * @param {[TODO:type]} message - [TODO:description]
-   */
-  handleWorkerMessage(message) {
-    if (message.type === "audio") {
-      // Add the audio data to our chart
-      window.audioSamples = window.audioSamples
-        .concat(message.data)
-        .slice(-MAX_SAMPLES);
-    }
   }
 
   async registerModulesForProcessor() {
@@ -174,6 +146,7 @@ export default class extends Controller {
       ],
     };
     window.audioSamples = [];
+    window.voiceProbabilities = [];
     window.chart = new Chart(this.chartTarget, {
       type: "scatter",
       data: data,
@@ -190,6 +163,8 @@ export default class extends Controller {
             type: "linear",
             position: "bottom",
             display: false,
+            //min: 1719658412,
+            //max: 1719658512
           },
           y: {
             min: -1,
@@ -203,16 +178,46 @@ export default class extends Controller {
         },
       },
     });
+
+    window.addEventListener("audio", (event) => {
+      const reduction_factor = 16000 / 500;
+      const reduced_audio = event.detail.filter(
+        (_, i) => i % reduction_factor === 0,
+      );
+      window.audioSamples = window.audioSamples
+        .concat(reduced_audio)
+        .slice(-MAX_SAMPLES);
+    });
+
+    window.addEventListener("voiceActivityProbability", (event) => {
+      window.voiceProbabilities = window.voiceProbabilities
+        .push(event.detail)
+        .slice(-50);
+    });
   }
 
   startChartUpdating() {
     this.stopChartUpdating();
     window.updateChartInterval = setInterval(() => {
-      window.chart.data.datasets[1].data = window.audioSamples.map(
-        (sample, index) => {
-          return { x: index, y: sample };
+      window.chart.data.datasets[1].data = window.audioSamples.map((sample) => {
+        return { x: sample.timestamp * 1000, y: sample.value };
+      });
+      window.chart.data.datasets[0].data = window.voiceProbabilities.map(
+        (probability) => {
+          return { x: probability.timestamp * 1000, y: probability.value };
         },
       );
+
+      // I don't want the X axis to be growing as the data comes in
+      const samples = window.chart.data.datasets[1].data;
+      const samplesLength = window.audioSamples.length;
+      if (samplesLength > 2) {
+        let end = samples[samplesLength - 1].x;
+        let start = end - 10 * 1000;
+        chart.options.scales.x.min = start;
+        chart.options.scales.x.max = end;
+      }
+
       window.chart.update();
     }, 300);
   }
@@ -223,6 +228,7 @@ export default class extends Controller {
 
   resetChart() {
     window.audioSamples = [];
+    window.voiceProbabilities = [];
     if (!window.chart) return;
     window.chart.data.datasets[0].data = [];
     window.chart.data.datasets[1].data = [];
