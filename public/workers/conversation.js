@@ -6,8 +6,15 @@
 // and passes it around to the sub workers
 
 /**
- * @param {{data: string}}
+ * @param {Float32Array} inputs
  */
 onmessage = ({ data }) => {
-  //console.debug("Conversation worker received: ", data);
+  //// We only want to send ~500 samples per second
+  //// to the chart
+  const reduction_factor = 16000 / 500;
+  const reduced_audio = data.filter((_, i) => i % reduction_factor === 0);
+  postMessage({
+    type: "audio",
+    data: reduced_audio,
+  });
 };
