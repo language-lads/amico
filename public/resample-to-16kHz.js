@@ -1,3 +1,4 @@
+const BUFFER_SIZE = 4096; // Roughly 256ms of data at 16kHz
 /**
  * Processor to resample audio samples to 32 bit float, 16kHz samples
  *
@@ -8,6 +9,8 @@
 class ResampleTo16kHz extends AudioWorkletProcessor {
   constructor(...args) {
     super(...args);
+    this.buffer = [];
+
     // Receive the audio stream settings (sampleRate etc.)
     this.port.onmessage = (e) => {
       /**
@@ -37,8 +40,15 @@ class ResampleTo16kHz extends AudioWorkletProcessor {
    */
   process(inputs, _outputs, _parameters) {
     const input = inputs[0][0];
-    const resampled16kHz = this.sampler.full(input);
-    this.port.postMessage(Array.prototype.slice.call(resampled16kHz));
+    const resampled16kHz = Array.from(this.sampler.full(input));
+
+    this.buffer.push(...resampled16kHz);
+    if (this.buffer.length >= BUFFER_SIZE) {
+      // Take the first BUFFER_SIZE samples
+      this.port.postMessage(this.buffer.slice(0, BUFFER_SIZE));
+      // Remove the first BUFFER_SIZE samples
+      this.buffer = this.buffer.slice(BUFFER_SIZE);
+    }
     return true;
   }
 }
