@@ -212,7 +212,7 @@ export default class extends Controller {
       const samplesLength = window.audioSamples.length;
       if (samplesLength > 2) {
         let end = samples[samplesLength - 1].x;
-        let start = end - 10 * 1000;
+        let start = samples[0].x;
         chart.options.scales.x.min = start;
         chart.options.scales.x.max = end;
       }
