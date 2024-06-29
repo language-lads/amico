@@ -2,5 +2,5 @@
 import "@hotwired/turbo-rails";
 import "controllers";
 
-import VoiceActivityDetection from "./voice_activity_detection";
+import VoiceActivityDetection from "classes/voice_activity_detection";
 new VoiceActivityDetection();

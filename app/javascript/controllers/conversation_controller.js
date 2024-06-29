@@ -190,9 +190,8 @@ export default class extends Controller {
     });
 
     window.addEventListener("voiceActivityProbability", (event) => {
-      window.voiceProbabilities = window.voiceProbabilities
-        .push(event.detail)
-        .slice(-50);
+      window.voiceProbabilities.push(event.detail);
+      window.voiceProbabilities = window.voiceProbabilities.slice(-50);
     });
   }
 
