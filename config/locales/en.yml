@@ -33,4 +33,6 @@ en:
     admin_only: 'Access denied, you are not an admin.'
     user_deleted: 'User was deleted.'
     toggle_admin: 'Admin status updated.'
-
+  time:
+    formats:
+      long: "%Y-%m-%d %H:%M:%S"

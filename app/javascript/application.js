@@ -4,3 +4,6 @@ import "controllers";
 
 import VoiceActivityDetection from "classes/voice_activity_detection";
 new VoiceActivityDetection();
+
+import LocalTime from "local-time";
+LocalTime.start();
