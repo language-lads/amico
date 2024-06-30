@@ -1,0 +1,63 @@
+<h1>Admin Dashboard</h1>
+
+<%# Create a table of all users %>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 5px;
+}
+</style>
+
+<table>
+  <thead>
+    <tr>
+      <th>Email</th>
+      <th>Created at</th>
+      <th>Sign in count</th>
+      <th>Last sign in</th>
+      <th>Provider</th>
+      <th>Confirmed at</th>
+      <th>Administrator</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @users.each.sort_by(&:created_at).each do |user| %>
+      <tr>
+        <td><%= user.email %></td>
+        <%# Show date in local timezone %>
+        <td><%= user.created_at.localtime %></td>
+        <td><%= user.sign_in_count %></td>
+        <td><%= user.last_sign_in_at.localtime %></td>
+        <td><%= user.provider %></td>
+        <td><%= user.confirmed_at.localtime %></td>
+        <td><%= user.admin %></td>
+        <td>
+          <%= button_to "Toggle Admin",
+          admin_toggle_admin_path(id: user.id),
+          # If this is the current_user, ask if they are sure
+          data: {
+            confirm: user == current_user ? "Are you sure?" : nil,
+            turbo_confirm: user == current_user ? "Are you sure?" : nil,
+          },
+          method: :patch %>
+        </td>
+        <td>
+          <%= button_to "Delete",
+          admin_destroy_user_path(id: user.id),
+          data: {
+            confirm: "Are you sure?",
+            turbo_confirm: "Are you sure?",
+          },
+          method: :delete %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+
+</table>
+
+<br/>
+<%= link_to "Back", :back %>

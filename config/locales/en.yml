@@ -29,3 +29,8 @@
 
 en:
   hello: "Hello world"
+  admin:
+    admin_only: 'Access denied, you are not an admin.'
+    user_deleted: 'User was deleted.'
+    toggle_admin: 'Admin status updated.'
+

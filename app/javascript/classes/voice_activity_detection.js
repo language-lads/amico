@@ -5,7 +5,7 @@ export default class VoiceActivityDetection {
     ort.env.wasm.wasmPaths =
       "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.18.0/dist/";
 
-    ort.InferenceSession.create("models/silero_vad.onnx").then((session) => {
+    ort.InferenceSession.create("/models/silero_vad.onnx").then((session) => {
       this.session = session;
     });
 
