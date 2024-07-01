@@ -1,4 +1,5 @@
 const BUFFER_SIZE = 4096; // Roughly 256ms of data at 16kHz
+
 /**
  * Processor to resample audio samples to 32 bit float, 16kHz samples
  *

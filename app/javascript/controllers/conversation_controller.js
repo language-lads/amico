@@ -113,7 +113,7 @@ export default class extends Controller {
       "https://cdn.jsdelivr.net/npm/@alexanderolsen/libsamplerate-js/dist/libsamplerate.worklet.js",
     );
     await window.amicoStreamContext.audioWorklet.addModule(
-      "resample-to-16kHz.js",
+      "/worklets/resample-to-16kHz.js",
     );
   }
 
@@ -173,7 +173,23 @@ export default class extends Controller {
         },
         plugins: {
           annotation: {
-            annotations: {},
+            annotations: {
+              line1: {
+                label: {
+                  content: "Speech threshold",
+                  display: true,
+                  color: "green",
+                  position: "start",
+                  yAdjust: -20,
+                },
+                type: "line",
+                yMin: 0.2, // Speech threshold is 0.2
+                yMax: 0.2,
+                borderColor: "green",
+                borderDash: [5, 10],
+                borderWidth: 2,
+              },
+            },
           },
         },
       },

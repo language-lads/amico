@@ -2,8 +2,12 @@
 import "@hotwired/turbo-rails";
 import "controllers";
 
-import VoiceActivityDetection from "classes/voice_activity_detection";
-new VoiceActivityDetection();
-
+// @ts-ignore
 import LocalTime from "local-time";
 LocalTime.start();
+
+import VoiceActivityDetection from "./jobs/voice_activity_detection";
+new VoiceActivityDetection();
+
+//import Whisper from "./jobs/whisper";
+//new Whisper();

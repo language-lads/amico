@@ -14,6 +14,7 @@ end
 
 task lint: :environment do
   sh 'bundle exec rubocop' # Run with --autocorrect-all to fix offenses
+  sh 'npm run tsc'         # Run with --autocorrect-all to fix offenses
 end
 
 task format: :environment do

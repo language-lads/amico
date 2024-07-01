@@ -1,0 +1,18 @@
+{
+	"compilerOptions": {
+		"strict": true,
+		"checkJs": true,
+		"allowJs": true,
+		"noEmit": true
+	},
+	"include": [
+		"app/javascript/**/*.js",
+		"app/javascript/types",
+		"public/worklets/**/*.js"
+	],
+	"types": [
+		"@types/web",
+		"@types/audioworklet",
+		"onnxruntime-web"
+	]
+}
