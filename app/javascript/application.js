@@ -6,7 +6,7 @@ import "controllers";
 import LocalTime from "local-time";
 LocalTime.start();
 
-import VoiceActivityDetection from "./jobs/voice_activity_detection";
+import VoiceActivityDetection from "jobs/voice_activity_detection";
 new VoiceActivityDetection();
 
 //import Whisper from "./jobs/whisper";

@@ -1,6 +1,7 @@
 // Import and register all your controllers from the importmap under controllers/*
 
-import { application } from "./application";
+// @ts-ignore
+import { application } from "application";
 
 // Eager load all controllers defined in the import map under controllers/**/*_controller
 // @ts-ignore

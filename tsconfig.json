@@ -6,7 +6,8 @@
 		"noEmit": true
 	},
 	"include": [
-		"app/javascript/**/*.js",
+		"app/javascript/jobs/**/*.js",
+		"app/javascript/contrllers/**/*.js",
 		"app/javascript/types",
 		"public/worklets/**/*.js"
 	],
