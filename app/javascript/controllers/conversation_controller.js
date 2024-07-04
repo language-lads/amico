@@ -268,16 +268,16 @@ const STREAM_CONSTRAINTS = {
       exact: 1,
     },
     echoCancellation: {
-      ideal: true,
+      ideal: false,
     },
     noiseSuppression: {
-      ideal: true,
+      ideal: false,
     },
     autoGainControl: {
       ideal: true,
     },
     voiceIsolation: {
-      ideal: true,
+      ideal: false,
     },
     sampleRate: {
       ideal: 16000, // 16kHz

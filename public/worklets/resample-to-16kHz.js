@@ -22,7 +22,7 @@ class ResampleTo16kHz extends AudioWorkletProcessor {
 
       // Create a new resampler
       const { create, ConverterType } = globalThis.LibSampleRate;
-      let nChannels = this.trackSettings.channelCount;
+      let nChannels = this.trackSettings.channelCount || 1;
       let inputSampleRate = this.trackSettings.sampleRate;
       let outputSampleRate = 16000; // kHz
       create(nChannels, inputSampleRate, outputSampleRate, {

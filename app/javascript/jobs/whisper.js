@@ -10,6 +10,6 @@ export default class Whisper {
    * @param {VoiceProbabilityEvent} event
    */
   handleVoiceActivity({ detail }) {
-    console.log("voice activity: ", detail);
+    //console.log("voice activity: ", detail);
   }
 }

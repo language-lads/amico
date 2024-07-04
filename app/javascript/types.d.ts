@@ -28,6 +28,8 @@ type VoiceProbability = {
   timestamp: Timestamp;
 };
 
+type VoiceProbabilities = VoiceProbability[];
+
 /** Event emitted on every new available voice probability */
 interface VoiceProbabilityEvent extends CustomEvent {
   detail: VoiceProbability;
