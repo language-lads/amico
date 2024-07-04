@@ -8,7 +8,7 @@
 	"include": [
 		"app/javascript/jobs/**/*.js",
 		"app/javascript/contrllers/**/*.js",
-		"app/javascript/types",
+		"app/javascript/**/*.d.ts",
 		"public/worklets/**/*.js"
 	],
 	"types": [

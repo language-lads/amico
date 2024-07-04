@@ -1,12 +1,15 @@
 export default class Whisper {
   constructor() {
     window.addEventListener(
-      "voiceActivityProbability",
-      async (e) => await this.handleAudio(e),
+      "voiceProbability",
+      /** @type {EventListener} */ (this.handleVoiceActivity),
     );
   }
 
-  async handleAudio(audioEvent) {
-    console.log("audioEvent: ", audioEvent);
+  /**
+   * @param {VoiceProbabilityEvent} event
+   */
+  handleVoiceActivity({ detail }) {
+    console.log("voice activity: ", detail);
   }
 }

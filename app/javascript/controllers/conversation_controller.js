@@ -205,7 +205,7 @@ export default class extends Controller {
         .slice(-MAX_SAMPLES);
     });
 
-    window.addEventListener("voiceActivityProbability", (event) => {
+    window.addEventListener("voiceProbability", (event) => {
       window.voiceProbabilities.push(event.detail);
       window.voiceProbabilities = window.voiceProbabilities.slice(-50);
     });
