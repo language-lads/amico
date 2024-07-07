@@ -24,7 +24,3 @@ The output of these is a series of live "speech utterances" that can then be
 passed to the server via ActionCable and processed accordingly.
 
 ## TODO
-
-Add styling with tailwind.css
-
-- https://tailwindcss.com/docs/guides/ruby-on-rails

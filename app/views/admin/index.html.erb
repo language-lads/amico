@@ -1,4 +1,4 @@
-<h1>Admin Dashboard</h1>
+<h1 class="title is-1">Admin Dashboard</h1>
 
 <%# Create a table of all users %>
 <style>
@@ -9,7 +9,9 @@ table, th, td {
 }
 </style>
 
-<table>
+<br/>
+<br/>
+<table class="table">
   <thead>
     <tr>
       <th>Email</th>
@@ -41,6 +43,7 @@ table, th, td {
             confirm: user == current_user ? "Are you sure?" : nil,
             turbo_confirm: user == current_user ? "Are you sure?" : nil,
           },
+          class: "button is-info",
           method: :patch %>
         </td>
         <td>
@@ -50,6 +53,7 @@ table, th, td {
             confirm: "Are you sure?",
             turbo_confirm: "Are you sure?",
           },
+          class: "button is-danger",
           method: :delete %>
         </td>
       </tr>

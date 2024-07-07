@@ -1,5 +1,7 @@
-<h1>Amico</h1>
+<h1 class="title is-1">Amico</h1>
+<br/>
 <p>Press start to begin recording from the microphone.</p>
+<br/>
 <div
   data-controller="conversation"
   data-conversation-is-listening-value="false"
@@ -8,11 +10,14 @@
     <button
       data-action="click->conversation#startClicked"
       data-conversation-target="startButton"
+      class="button is-primary"
     >Start</button>
+    <br/>
     <br/>
     <button
       data-action="click->conversation#stopClicked"
       data-conversation-target="stopButton"
+      class="button is-danger"
     >Stop</button>
   </div>
 
