@@ -9,5 +9,9 @@ LocalTime.start();
 import VoiceActivityDetection from "jobs/voice_activity_detection";
 new VoiceActivityDetection();
 
+import AudioChunking from "jobs/audio_chunking";
+new AudioChunking();
+
 import Whisper from "jobs/whisper";
 new Whisper();
+

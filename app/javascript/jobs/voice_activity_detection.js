@@ -2,8 +2,6 @@ import * as ort from "onnxruntime-web";
 
 export default class VoiceActivityDetection {
   constructor() {
-    // TODO: Create ring buffers for both audiosamples and voiceprobabilities
-
     /**
      * @public
      * @type {VoiceProbabilities}

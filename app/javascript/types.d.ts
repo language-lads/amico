@@ -25,7 +25,7 @@ interface AudioEvent extends CustomEvent {
 type VoiceProbability = {
   /** Probability value between 0 and 1 */
   value: number;
-  timestamp: Timestamp;
+  timestamp: Timestamp; 
 };
 
 type VoiceProbabilities = VoiceProbability[];

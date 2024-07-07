@@ -1,7 +1,7 @@
 export default class Whisper {
   constructor() {
     window.addEventListener(
-      "voiceProbability",
+      "userAudioUtterance",
       /** @type {EventListener} */ (this.handleVoiceActivity),
     );
   }
@@ -10,6 +10,6 @@ export default class Whisper {
    * @param {VoiceProbabilityEvent} event
    */
   handleVoiceActivity({ detail }) {
-    //console.log("voice activity: ", detail);
+    console.log("user audio utterance", detail);
   }
 }
