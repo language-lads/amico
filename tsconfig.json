@@ -6,10 +6,7 @@
 		"noEmit": true
 	},
 	"include": [
-		"app/javascript/jobs/**/*.js",
-		"app/javascript/contrllers/**/*.js",
-		"app/javascript/**/*.d.ts",
-		"public/worklets/**/*.js"
+		"app/javascript/**/*"
 	],
 	"types": [
 		"@types/web",

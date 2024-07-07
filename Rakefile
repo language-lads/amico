@@ -9,7 +9,7 @@ require_relative 'config/application'
 
 task dev: :environment do
   sh 'bundle exec rails db:migrate'
-  sh 'bundle exec rails server'
+  sh 'bundle exec bin/dev'
 end
 
 task lint: :environment do

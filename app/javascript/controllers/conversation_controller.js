@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
+import Chart from "chart.js/auto";
 
 const MAX_SAMPLES = 5000;
 

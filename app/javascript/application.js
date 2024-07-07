@@ -1,17 +1,16 @@
-// Configure your import map in config/importmap.rb. Read more: https://github.com/rails/importmap-rails
+// Entry point for the build script in your package.json
 import "@hotwired/turbo-rails";
-import "controllers";
+import "./controllers";
 
 import LocalTime from "local-time";
 LocalTime.start();
 
 // Javascript jobs to do fancy AI inference on the browser
-import VoiceActivityDetection from "jobs/voice_activity_detection";
+import VoiceActivityDetection from "./jobs/voice_activity_detection";
 new VoiceActivityDetection();
 
-import AudioChunking from "jobs/audio_chunking";
+import AudioChunking from "./jobs/audio_chunking";
 new AudioChunking();
 
-import Whisper from "jobs/whisper";
+import Whisper from "./jobs/whisper";
 new Whisper();
-
