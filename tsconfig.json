@@ -3,7 +3,8 @@
 		"strict": true,
 		"checkJs": true,
 		"allowJs": true,
-		"noEmit": true
+		"noEmit": true,
+		"skipLibCheck": true
 	},
 	"include": [
 		"app/javascript/**/*"
