@@ -38,3 +38,8 @@ node_modules/
 
 /app/assets/builds/*
 !/app/assets/builds/.keep
+
+# When necessary, we'll copy .wasm files directly from
+# node_modules as part of the build process.
+/public/wasm/*
+!/public/wasm/.keep

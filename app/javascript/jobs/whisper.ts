@@ -7,7 +7,6 @@ import {
   Quantization,
   Segment,
 } from "@ratchet-ml/ratchet-web";
-import wasm from "@ratchet-ml/ratchet-web/ratchet-web_bg.wasm";
 
 export default class Whisper {
   private model: Model | undefined;
@@ -29,7 +28,7 @@ export default class Whisper {
     const task = Task.Transcribe;
     const suppress_non_speech = true;
 
-    await init(wasm);
+    await init("wasm/ratchet-web_bg.wasm");
     this.model = await Model.load(
       selectedModel,
       Quantization.F32,
