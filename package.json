@@ -17,7 +17,7 @@
 		"typescript": "^5.5.2"
 	},
 	"scripts": {
-		"build": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets && yarn build:wasm",
+		"build": "yarn build:wasm && esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets",
 		"build:css": "sass ./app/assets/stylesheets/application.bulma.scss:./app/assets/builds/application.css --no-source-map --load-path=node_modules",
 		"build:wasm": "cpx node_modules/@ratchet-ml/ratchet-web/ratchet-web_bg.wasm public/wasm"
 	},

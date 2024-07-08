@@ -27,8 +27,7 @@ export default class Whisper {
     const selectedModel: AvailableModels = { Whisper: "base" };
     const task = Task.Transcribe;
     const suppress_non_speech = true;
-
-    await init("wasm/ratchet-web_bg.wasm");
+    await init(new URL('wasm/ratchet-web_bg.wasm', window.location.origin));
     this.model = await Model.load(
       selectedModel,
       Quantization.F32,
