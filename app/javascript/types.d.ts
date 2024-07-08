@@ -1,5 +1,6 @@
 interface Window {
   Stimulus: import("@hotwired/stimulus").Application;
+  Whisper: import("./whisper").default;
 }
 
 /**
@@ -37,3 +38,4 @@ interface VoiceProbabilityEvent extends CustomEvent {
 
 declare module "local-time";
 declare module "*.wasm";
+declare module "@rails/request.js";

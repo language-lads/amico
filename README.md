@@ -24,3 +24,6 @@ The output of these is a series of live "speech utterances" that can then be
 passed to the server via ActionCable and processed accordingly.
 
 ## TODO
+
+Fix whisper inference on mobile chrome.
+- Do it at home on the same wifi and use the inspector

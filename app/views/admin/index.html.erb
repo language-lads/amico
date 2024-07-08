@@ -20,6 +20,7 @@ table, th, td {
       <th>Last sign in</th>
       <th>Provider</th>
       <th>Confirmed at</th>
+      <th>Language</th>
       <th>Administrator</th>
       <th></th>
       <th></th>
@@ -34,6 +35,7 @@ table, th, td {
         <td><%= local_time(user.last_sign_in_at, :long) %></td>
         <td><%= user.provider %></td>
         <td><%= local_time(user.confirmed_at, :long) %></td>
+        <td><%= user.language %></td>
         <td><%= user.admin %></td>
         <td>
           <%= button_to "Toggle Admin",

@@ -13,4 +13,4 @@ import AudioChunking from "./jobs/audio_chunking";
 new AudioChunking();
 
 import Whisper from "./jobs/whisper";
-new Whisper();
+window.Whisper = new Whisper();

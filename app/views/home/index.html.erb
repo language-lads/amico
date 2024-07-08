@@ -19,6 +19,22 @@
       data-conversation-target="stopButton"
       class="button is-danger"
     >Stop</button>
+    <%# Select elemnt for the language %>
+    <br/>
+    <br/>
+    <label for="language">Language:</label>
+    <select
+      data-controller="language"
+      data-action="change->language#changeLanguage"
+      id="language"
+    >
+      <% User::LANGUAGES.each do |language| %>
+        <option
+          value="<%= language %>"
+          <%= "selected" if current_user.language == language %>
+        ><%= language %></option>
+      <% end %>
+    </select>
   </div>
 
   <br/>

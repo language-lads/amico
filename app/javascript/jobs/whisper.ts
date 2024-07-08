@@ -8,6 +8,8 @@ import {
   Segment,
 } from "@ratchet-ml/ratchet-web";
 
+type Language = "en" | "it" | "de";
+
 export default class Whisper {
   private model: Model | undefined;
   private options: any;
@@ -22,12 +24,18 @@ export default class Whisper {
     });
   }
 
+  setLanguage(language: Language) {
+    this.options.language = {
+      String: language,
+    };
+  }
+
   async setupWhisper() {
     const language = "en";
-    const selectedModel: AvailableModels = { Whisper: "base" };
+    const selectedModel: AvailableModels = { Whisper: "tiny" };
     const task = Task.Transcribe;
     const suppress_non_speech = true;
-    await init(new URL('wasm/ratchet-web_bg.wasm', window.location.origin));
+    await init(new URL("wasm/ratchet-web_bg.wasm", window.location.origin));
     this.model = await Model.load(
       selectedModel,
       Quantization.F32,

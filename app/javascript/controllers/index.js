@@ -9,3 +9,6 @@ application.register("chat", ChatController)
 
 import ConversationController from "./conversation_controller"
 application.register("conversation", ConversationController)
+
+import LanguageController from "./language_controller"
+application.register("language", LanguageController)

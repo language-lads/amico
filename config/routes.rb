@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
 
   get 'home/index'
+  patch 'home/change_language'
 
   get 'admin/index'
   delete 'admin/destroy_user'
