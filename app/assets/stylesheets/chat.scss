@@ -1,0 +1,17 @@
+.chat-container {
+  /* Make the chat history scrollable */
+  flex: 1 1 auto;
+  overflow-y: auto;
+  height: 0px;
+  min-height: 200px;
+
+  /* Add padding to the right to prevent the chat history from overlapping the scrollbar */
+  padding-right: 20px;
+}
+
+.chat-message {
+  width: fit-content;
+  font-size: 0.9rem;
+  padding: 10px;
+  max-width: 80%;
+}

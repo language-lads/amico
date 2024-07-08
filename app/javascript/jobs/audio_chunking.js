@@ -20,6 +20,9 @@ export default class AudioChunking {
     this.voiceThreshold = 0.1; // Voice probability values higher than this are considered "speech"
     this.silenceThreshold = 0.1; // How many seconds of silence to wait before considering an utterance finished
 
+    this.scrubThresholdLimit = 0.01; // Any audio values below this are considered silence
+    this.scrubThresholdTime = 0.5; // Blocks longer than this are scrubbed from the audio chunk
+
     /** @type {number | null} */
     this.previousPauseTimestamp = null; // Records the timestamp of the last pause in speech
 
@@ -99,14 +102,48 @@ export default class AudioChunking {
     }
 
     // Ok let's broadcast the audio chunk data
-    const chunkStart = previousPauseTimestamp;
-    const chunkEnd = latestVoiceTimestamp;
+    let chunkStart = Math.max(
+      previousPauseTimestamp - this.silenceThreshold, // Add a lil' sprinkle of silence to the beginning
+      earliestVoiceTimestamp,
+    );
+    let chunkEnd = latestVoiceTimestamp;
     // TODO: This probably needs some performance improvements
-    const chunk = this.audioSamples.filter(
+    let chunk = this.audioSamples.filter(
       (sample) =>
         sample.timestamp >= chunkStart && sample.timestamp <= chunkEnd,
     );
-		this.previousPauseTimestamp = chunkEnd;
+
+    // Scrub any silence from the beginning and end of the chunk
+    let startIndex = 0;
+    let endIndex = chunk.length - 1;
+
+    // Work our way inwards, scrubbing out silence as we go
+    while (
+      chunk[startIndex].value < this.scrubThresholdLimit &&
+      startIndex < endIndex
+    )
+      startIndex++;
+    while (
+      chunk[endIndex].value < this.scrubThresholdLimit &&
+      startIndex < endIndex
+    )
+      endIndex--;
+    if (startIndex == endIndex) return; // We've only got silence, so don't bother broadcasting
+
+    chunkStart = Math.max(
+      chunkStart,
+      chunk[startIndex].timestamp - this.scrubThresholdTime,
+    );
+    chunkEnd = Math.min(
+      chunkEnd,
+      chunk[endIndex].timestamp + this.scrubThresholdTime,
+    );
+    chunk = this.audioSamples.filter(
+      (sample) =>
+        sample.timestamp >= chunkStart && sample.timestamp <= chunkEnd,
+    );
+
+    this.previousPauseTimestamp = chunkEnd;
     window.dispatchEvent(
       new CustomEvent("userAudioUtterance", { detail: chunk }),
     );

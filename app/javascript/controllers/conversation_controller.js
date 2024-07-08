@@ -1,7 +1,8 @@
 import { Controller } from "@hotwired/stimulus";
+import annotationPlugin from "chartjs-plugin-annotation";
 import Chart from "chart.js/auto";
 
-const MAX_SAMPLES = 5000;
+const CHART_WINDOW = 15 // seconds
 
 export default class extends Controller {
   // TODO: Make sure to limit the size of the audio samples array
@@ -148,6 +149,7 @@ export default class extends Controller {
     };
     window.audioSamples = [];
     window.voiceProbabilities = [];
+    Chart.register(annotationPlugin);
     window.chart = new Chart(this.chartTarget, {
       type: "scatter",
       data: data,
@@ -184,8 +186,8 @@ export default class extends Controller {
                   yAdjust: -20,
                 },
                 type: "line",
-                yMin: 0.2, // Speech threshold is 0.2
-                yMax: 0.2,
+                yMin: 0.1, // Speech threshold is 0.1
+                yMax: 0.1,
                 borderColor: "green",
                 borderDash: [5, 10],
                 borderWidth: 2,
@@ -201,14 +203,32 @@ export default class extends Controller {
       const reduced_audio = event.detail.filter(
         (_, i) => i % reduction_factor === 0,
       );
+      const lastTimestamp = event.detail.at(-1).timestamp;
       window.audioSamples = window.audioSamples
         .concat(reduced_audio)
-        .slice(-MAX_SAMPLES);
+        .filter((x) => x.timestamp > lastTimestamp - CHART_WINDOW);
     });
 
     window.addEventListener("voiceProbability", (event) => {
       window.voiceProbabilities.push(event.detail);
-      window.voiceProbabilities = window.voiceProbabilities.slice(-50);
+      const lastTimestamp = event.detail.timestamp;
+      window.voiceProbabilities = window.voiceProbabilities.filter(
+        (x) => x.timestamp > lastTimestamp - CHART_WINDOW,
+      );
+    });
+
+    window.addEventListener("userAudioUtterance", ({ detail }) => {
+      let start = detail.at(0).timestamp;
+      let end = detail.at(-1).timestamp;
+      window.chart.options.plugins.annotation.annotations.box1 = {
+        type: "box",
+        xMin: start * 1000,
+        xMax: end * 1000,
+        yMin: -0.1,
+        yMax: 0.1,
+        backgroundColor: "rgb(153, 102, 255, 0.45)",
+      };
+      window.chart.update();
     });
   }
 
@@ -229,7 +249,7 @@ export default class extends Controller {
       const samplesLength = window.audioSamples.length;
       if (samplesLength > 2) {
         let end = samples[samplesLength - 1].x;
-        let start = samples[0].x;
+        let start = end - CHART_WINDOW * 1000; // CHART_WINDOW seconds
         chart.options.scales.x.min = start;
         chart.options.scales.x.max = end;
       }
@@ -269,16 +289,16 @@ const STREAM_CONSTRAINTS = {
       exact: 1,
     },
     echoCancellation: {
-      ideal: false,
+      ideal: true,
     },
     noiseSuppression: {
-      ideal: false,
+      ideal: true,
     },
     autoGainControl: {
       ideal: true,
     },
     voiceIsolation: {
-      ideal: false,
+      ideal: true,
     },
     sampleRate: {
       ideal: 16000, // 16kHz
