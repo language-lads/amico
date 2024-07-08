@@ -36,3 +36,4 @@ interface VoiceProbabilityEvent extends CustomEvent {
 }
 
 declare module "local-time";
+declare module "*.wasm";

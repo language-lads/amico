@@ -6,8 +6,12 @@
 require_relative 'config/application'
 
 # Make sure to run `bundle install` before running any of the tasks
+task install: :environment do
+  sh 'bundle install'
+  sh 'yarn install'
+end
 
-task dev: :environment do
+task dev: %i[environment install] do
   sh 'bundle exec rails db:migrate'
   sh 'bundle exec bin/dev'
 end

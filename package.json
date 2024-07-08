@@ -4,18 +4,19 @@
 	"dependencies": {
 		"@hotwired/stimulus": "^3.2.2",
 		"@hotwired/turbo-rails": "^8.0.4",
+		"@ratchet-ml/ratchet-web": "^0.4.0",
 		"@types/audioworklet": "^0.0.56",
 		"@types/web": "^0.0.150",
-		"chart.js": "^4.4.3",
 		"bulma": "^1.0.1",
-		"sass": "^1.77.6",
+		"chart.js": "^4.4.3",
 		"esbuild": "^0.23.0",
 		"local-time": "^3.0.2",
 		"onnxruntime-web": "1.18.0",
+		"sass": "^1.77.6",
 		"typescript": "^5.5.2"
 	},
 	"scripts": {
-		"build": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets",
-    "build:css": "sass ./app/assets/stylesheets/application.bulma.scss:./app/assets/builds/application.css --no-source-map --load-path=node_modules"
+		"build": "esbuild app/javascript/*.* --bundle --sourcemap --loader:.wasm=file --format=esm --outdir=app/assets/builds --public-path=/assets",
+		"build:css": "sass ./app/assets/stylesheets/application.bulma.scss:./app/assets/builds/application.css --no-source-map --load-path=node_modules"
 	}
 }

@@ -203,6 +203,11 @@
   resolved "https://registry.yarnpkg.com/@rails/actioncable/-/actioncable-7.1.3.tgz#4db480347775aeecd4dde2405659eef74a458881"
   integrity sha512-ojNvnoZtPN0pYvVFtlO7dyEN9Oml1B6IDM+whGKVak69MMYW99lC2NOWXWeE3bmwEydbP/nn6ERcpfjHVjYQjA==
 
+"@ratchet-ml/ratchet-web@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@ratchet-ml/ratchet-web/-/ratchet-web-0.4.0.tgz#729efe4e3aff812debe95543d1b1182def58c8c8"
+  integrity sha512-O7403JwDex853vfbt38770/9FBu8JYMrF/TdOKzpbcz8y+vW3ALpyNmgxG8Ian+ShLdC5iVFCrixjuBfSht3Yg==
+
 "@types/audioworklet@^0.0.56":
   version "0.0.56"
   resolved "https://registry.yarnpkg.com/@types/audioworklet/-/audioworklet-0.0.56.tgz#9bf85f96cf830a1389cf26623666b0662d1905eb"
