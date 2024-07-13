@@ -6,7 +6,8 @@ import {
   AvailableModels,
   Quantization,
   Segment,
-} from "@ratchet-ml/ratchet-web";
+} from "../ratchet-ml/ratchet-web";
+//} from "@ratchet-ml/ratchet-web";
 
 type Language = "en" | "it" | "de";
 
