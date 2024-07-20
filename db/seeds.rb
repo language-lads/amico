@@ -9,3 +9,11 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+
+# Add default Users for myself and Bel
+User.create(email: 'admin@languagelads.com',
+            password: 'QTVE9s%Y!!tBfa',
+            password_confirmation: 'QTVE9s%Y!!tBfa',
+            admin: true,
+            language: 'en',
+            confirmed_at: Time.zone.now)

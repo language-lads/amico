@@ -1,0 +1,41 @@
+<h1 class="subtitle is-3">Conversations</h1>
+<br/>
+<table class="table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>User</th>
+      <th>Status</th>
+      <th>Audio</th>
+      <th>Language</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @conversations.each.sort_by(&:created_at).each do |conversation| %>
+      <tr>
+        <td><%= conversation.id %></td>
+        <td><%= conversation.user.email %></td>
+        <td><%= conversation.status %></td>
+        <td>
+          <audio controls>
+            <source src="<%= rails_blob_path(conversation.audio) %>" type="audio/mpeg">
+            Your browser does not support the audio element.
+          </audio>
+        </td>
+        <td><%= conversation.language %></td>
+        <td>
+          <%= button_to "Delete",
+          conversation,
+          data: {
+            confirm: "Are you sure?",
+            turbo_confirm: "Are you sure?",
+          },
+          class: "button is-danger",
+          method: :delete %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+
+</table>

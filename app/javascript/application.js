@@ -14,4 +14,3 @@ LocalTime.start();
 
 //import Whisper from "./jobs/whisper";
 //window.Whisper = new Whisper();
-import "./channels"

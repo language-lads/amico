@@ -11,58 +11,9 @@ table, th, td {
 
 <br/>
 <br/>
-<table class="table">
-  <thead>
-    <tr>
-      <th>Email</th>
-      <th>Created at</th>
-      <th>Sign in count</th>
-      <th>Last sign in</th>
-      <th>Provider</th>
-      <th>Confirmed at</th>
-      <th>Language</th>
-      <th>Administrator</th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @users.each.sort_by(&:created_at).each do |user| %>
-      <tr>
-        <td><%= user.email %></td>
-        <td><%= local_time(user.created_at, :long) %></td>
-        <td><%= user.sign_in_count %></td>
-        <td><%= local_time(user.last_sign_in_at, :long) %></td>
-        <td><%= user.provider %></td>
-        <td><%= local_time(user.confirmed_at, :long) %></td>
-        <td><%= user.language %></td>
-        <td><%= user.admin %></td>
-        <td>
-          <%= button_to "Toggle Admin",
-          admin_toggle_admin_path(id: user.id),
-          # If this is the current_user, ask if they are sure
-          data: {
-            confirm: user == current_user ? "Are you sure?" : nil,
-            turbo_confirm: user == current_user ? "Are you sure?" : nil,
-          },
-          class: "button is-info",
-          method: :patch %>
-        </td>
-        <td>
-          <%= button_to "Delete",
-          admin_destroy_user_path(id: user.id),
-          data: {
-            confirm: "Are you sure?",
-            turbo_confirm: "Are you sure?",
-          },
-          class: "button is-danger",
-          method: :delete %>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-
-</table>
-
+<%= render "users" %>
 <br/>
+<%= render "conversations" %>
+<br/>
+
 <%= link_to "Back", home_index_path %>

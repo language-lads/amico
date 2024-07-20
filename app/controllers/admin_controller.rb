@@ -6,6 +6,7 @@ class AdminController < ApplicationController
 
   def index
     @users = User.all
+    @conversations = Conversation.all
   end
 
   def destroy_user

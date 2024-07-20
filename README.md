@@ -10,6 +10,11 @@ For now, run `good_job` on the web server process
 GOOD_JOB_EXECUTION_MODE=async rails server
 ```
 
+## Development
+
+An admin user is created automatically when the database is seeded, with
+username `admin@languagelads.com` and password `QTVE9s%Y!!tBfa`.
+
 ## Running the models
 
 `silero_vad` and `whisper` should be runnable on the client side using these
@@ -26,4 +31,5 @@ passed to the server via ActionCable and processed accordingly.
 ## TODO
 
 Fix whisper inference on mobile chrome.
+
 - Do it at home on the same wifi and use the inspector
