@@ -7,14 +7,63 @@
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css"
+    />
     <%= javascript_include_tag "application",
     "data-turbo-track": "reload",
     type: "module" %>
   </head>
 
   <body>
-    <%= yield %>
-    <p class="notice"><%= notice %></p>
-    <p class="alert"><%= alert %></p>
+    <section class="hero is-fullheight">
+      <!-- Hero head: will stick at the top -->
+      <div class="hero-head">
+        <header class="navbar" data-controller="navbar">
+          <div class="container">
+            <div class="navbar-brand">
+              <div class="navbar-item">
+                <%= link_to "Amico", home_index_path, class: "title is-3" %>
+              </div>
+              <span
+                class="navbar-burger"
+                data-navbar-target="burger"
+                data-action="click->navbar#toggle"
+              >
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+              </span>
+            </div>
+            <div data-navbar-target="menu" class="navbar-menu">
+              <% if user_signed_in? %>
+                <div class="navbar-end">
+                  <%= link_to "Home", home_index_path, class: "navbar-item" %>
+                  <% if current_user.admin? %>
+                    <%= link_to "Admin", admin_index_path, class: "navbar-item" %>
+                  <% end %>
+                  <div class="navbar-item">
+                    <%= button_to destroy_user_session_path, 
+                      method: :delete, 
+                      class: "button is-link", 
+                      data: { 'turbo-submits-with': '...'} do %>
+                      <strong>Sign out</strong>
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </header>
+      </div>
+      <!-- Hero content: will be in the middle -->
+      <div class="hero-body">
+        <div class="container has-text-centered">
+          <%= yield %>
+        </div>
+      </div>
+    </section>
   </body>
 </html>

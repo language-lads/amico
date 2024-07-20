@@ -1,0 +1,4 @@
+// Prevent vertical scroll bar from appearing if not needed
+html {
+  overflow-y: auto !important;
+}

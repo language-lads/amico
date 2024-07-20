@@ -9,7 +9,19 @@ class User < ApplicationRecord
   # If a user is deleted, we want to keep all the conversations
   has_many :conversations, dependent: :nullify
 
-  LANGUAGES = %w[en it de].freeze
+  LANGUAGE_DETAILS = [{
+    code: 'en',
+    name: 'English',
+    flag_code: 'gb'
+  }, {
+    code: 'it',
+    name: 'Italiano',
+    flag_code: 'it'
+  }, {
+    code: 'de',
+    name: 'Deutsch',
+    flag_code: 'de'
+  }].freeze
 
   def self.from_omniauth(auth)
     find_or_create_by(provider: auth.provider, uid: auth.uid) do |user|
@@ -22,5 +34,9 @@ class User < ApplicationRecord
       # uncomment the line below to skip the confirmation emails.
       user.skip_confirmation!
     end
+  end
+
+  def language_details
+    LANGUAGE_DETAILS.find { |l| l[:code] == language }
   end
 end

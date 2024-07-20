@@ -1,87 +1,42 @@
-<h1 class="title is-1">Amico</h1>
-
-<br/>
 <%= form_with(model: Conversation.new) do |form| %>
   <%= form.button "Start",
               type: "submit",
-              class: "button is-primary",
+              class: "button is-primary is-large",
               # We don't want multiple starts and stops of the conversation controller, so disable turbo
               "data-turbo": "false" %>
 <% end %>
 <br/>
-<div class="select">
-  <%= content_tag :select, 
-    data: { controller: "language", action: "change->language#changeLanguage" } do %>
-    <% User::LANGUAGES.each do |language| %>
-      <%= content_tag :option,
-      language,
-      value: language,
-      selected: current_user.language == language %>
-    <% end %>
-  <% end %>
-</div>
 <br/>
-<br/>
-<br/>
-<br/>
-
-<%= link_to "Show this conversation", Conversation.first, "data-turbo": false %>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<p>Press start to begin recording from the microphone.</p>
-<br/>
-<div data-conversation-is-listening-value="false">
-  <div>
+<div class="dropdown is-large" data-controller="dropdown">
+  <div class="dropdown-trigger">
     <button
-      data-action="click->conversation#startClicked"
-      data-conversation-target="startButton"
-      class="button is-primary"
-    >Start</button>
-    <br/>
-    <br/>
-    <button
-      data-action="click->conversation#stopClicked"
-      data-conversation-target="stopButton"
-      class="button is-danger"
-    >Stop</button>
-    <%# Select elemnt for the language %>
-    <br/>
-    <br/>
-    <label for="language">Language:</label>
-    <select
-      data-controller="language"
-      data-action="change->language#changeLanguage"
-      id="language"
+      class="button"
+      aria-haspopup="true"
+      aria-controls="dropdown-menu"
+      data-action="click->dropdown#toggle click@window->dropdown#close"
     >
-      <% User::LANGUAGES.each do |language| %>
-        <option
-          value="<%= language %>"
-          <%= "selected" if current_user.language == language %>
-        ><%= language %></option>
+      <span class="fi fi-<%= current_user.language_details[:flag_code] %>"></span>
+      <span class="px-3">
+        <%= current_user.language_details[:name] %>
+      </span>
+      <span class="icon is-small">
+        <i class="fas fa-angle-down" aria-hidden="true"></i>
+      </span>
+    </button>
+  </div>
+  <div class="dropdown-menu" id="dropdown-menu" role="menu">
+    <div class="dropdown-content">
+      <% User::LANGUAGE_DETAILS.sort_by { |language| language[:name] }.each do |language| %>
+        <%= button_to home_change_language_path,
+          method: :patch,
+          params: {language: language[:code]},
+          class: "dropdown-item" do %>
+          <span class="fi fi-<%= language[:flag_code] %>"></span>
+          <span class="has-text-centered is-flex-grow-1">
+            <%= language[:name] %>
+          </span>
+        <% end %>
       <% end %>
-    </select>
+    </div>
   </div>
-
-  <br/>
-  <br/>
-
-  <%= link_to "Sign out", destroy_user_session_path, data: { "turbo-method": :delete } %>
-  <br/>
-  <%= link_to "Edit my account", edit_user_registration_path %>
-  <% if current_user.admin? %>
-    <br/>
-    <%= link_to "Admin dashboard", admin_index_path %>
-  <% end %>
-
-  <br/>
-  <br/>
-
-  <div style="height: 40vh;">
-    <canvas data-conversation-target="chart"></canvas>
-  </div>
-  <%= render "chat" %>
 </div>
