@@ -6,6 +6,9 @@ class User < ApplicationRecord
          :confirmable, :lockable, :timeoutable, :trackable,
          :omniauthable, omniauth_providers: %i[google_oauth2]
 
+  # If a user is deleted, we want to keep all the conversations
+  has_many :conversations, dependent: :nullify
+
   LANGUAGES = %w[en it de].freeze
 
   def self.from_omniauth(auth)

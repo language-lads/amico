@@ -1,0 +1,29 @@
+<div id="<%= dom_id conversation %>">
+  <p>
+    <strong>History:</strong>
+    <%= conversation.history %>
+  </p>
+
+  <p>
+    <strong>Audio:</strong>
+    <%= if conversation.audio.attached?
+      link_to conversation.audio.filename, conversation.audio
+    end %>
+  </p>
+
+  <p>
+    <strong>User:</strong>
+    <%= conversation.user_id %>
+  </p>
+
+  <p>
+    <strong>Language:</strong>
+    <%= conversation.language %>
+  </p>
+
+  <p>
+    <strong>Status:</strong>
+    <%= conversation.status %>
+  </p>
+
+</div>
