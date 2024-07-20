@@ -7,145 +7,145 @@
  * 3. Buffers audio data and voice probability data
  * 4. Runs an algorithm to break up the audio data into user utterances
  */
-export default class AudioChunking {
-  constructor() {
-    /** @type {VoiceProbabilities} */
-    this.voiceProbabilities = [];
-    this.voiceProbabilitiesMaxLength = (16000 / 4096) * 15; // Roughly 15 seconds of audio (16kHz samples)
+//export default class AudioChunking {
+//  constructor() {
+//    [>* @type {VoiceProbabilities} <]
+//    this.voiceProbabilities = [];
+//    this.voiceProbabilitiesMaxLength = (16000 / 4096) * 15; // Roughly 15 seconds of audio (16kHz samples)
 
-    /** @type {AudioSamples} */
-    this.audioSamples = [];
-    this.audioSamplesMaxLength = 16000 * 15; // Roughly 15 seconds of audio (16kHz samples)
+//    [>* @type {AudioSamples} <]
+//    this.audioSamples = [];
+//    this.audioSamplesMaxLength = 16000 * 15; // Roughly 15 seconds of audio (16kHz samples)
 
-    this.voiceThreshold = 0.1; // Voice probability values higher than this are considered "speech"
-    this.silenceThreshold = 0.1; // How many seconds of silence to wait before considering an utterance finished
+//    this.voiceThreshold = 0.1; // Voice probability values higher than this are considered "speech"
+//    this.silenceThreshold = 0.1; // How many seconds of silence to wait before considering an utterance finished
 
-    this.scrubThresholdLimit = 0.01; // Any audio values below this are considered silence
-    this.scrubThresholdTime = 0.5; // Blocks longer than this are scrubbed from the audio chunk
+//    this.scrubThresholdLimit = 0.01; // Any audio values below this are considered silence
+//    this.scrubThresholdTime = 0.5; // Blocks longer than this are scrubbed from the audio chunk
 
-    /** @type {number | null} */
-    this.previousPauseTimestamp = null; // Records the timestamp of the last pause in speech
+//    [>* @type {number | null} <]
+//    this.previousPauseTimestamp = null; // Records the timestamp of the last pause in speech
 
-    window.addEventListener(
-      "audio",
-      /** @type {EventListener} */ (this.handleAudio.bind(this)),
-    );
+//    window.addEventListener(
+//      "audio",
+//      [>* @type {EventListener} <] (this.handleAudio.bind(this)),
+//    );
 
-    window.addEventListener(
-      "voiceProbability",
-      /** @type {EventListener} */ (this.handleVoiceProbability.bind(this)),
-    );
-  }
+//    window.addEventListener(
+//      "voiceProbability",
+//      [>* @type {EventListener} <] (this.handleVoiceProbability.bind(this)),
+//    );
+//  }
 
-  /** @param {VoiceProbabilityEvent} event */
-  handleVoiceProbability({ detail }) {
-    this.voiceProbabilities.push(detail);
-    this.voiceProbabilities = this.voiceProbabilities.slice(
-      -this.voiceProbabilitiesMaxLength,
-    );
-    this.runChunkingAlgorithm();
-  }
+//  [>* @param {VoiceProbabilityEvent} event <]
+//  handleVoiceProbability({ detail }) {
+//    this.voiceProbabilities.push(detail);
+//    this.voiceProbabilities = this.voiceProbabilities.slice(
+//      -this.voiceProbabilitiesMaxLength,
+//    );
+//    this.runChunkingAlgorithm();
+//  }
 
-  /** @param {AudioEvent} event */
-  handleAudio({ detail }) {
-    this.audioSamples = this.audioSamples.concat(detail);
-    this.audioSamples = this.audioSamples.slice(-this.audioSamplesMaxLength);
-  }
+//  [>* @param {AudioEvent} event <]
+//  handleAudio({ detail }) {
+//    this.audioSamples = this.audioSamples.concat(detail);
+//    this.audioSamples = this.audioSamples.slice(-this.audioSamplesMaxLength);
+//  }
 
-  runChunkingAlgorithm() {
-    if (this.voiceProbabilities.length === 0) return;
+//  runChunkingAlgorithm() {
+//    if (this.voiceProbabilities.length === 0) return;
 
-    let earliestVoiceTimestamp = this.voiceProbabilities[0].timestamp;
-    let latestVoiceTimestamp = this.voiceProbabilities.slice(-1)[0].timestamp;
+//    let earliestVoiceTimestamp = this.voiceProbabilities[0].timestamp;
+//    let latestVoiceTimestamp = this.voiceProbabilities.slice(-1)[0].timestamp;
 
-    // If we've only got less than 2 seconds of data, don't look for an utterance
-    if (latestVoiceTimestamp - earliestVoiceTimestamp < 2) return;
+//    // If we've only got less than 2 seconds of data, don't look for an utterance
+//    if (latestVoiceTimestamp - earliestVoiceTimestamp < 2) return;
 
-    // Check if we've gotten past our silence threshold, and therefore have
-    // some audio to chunk and broadcast.
-    for (let i = this.voiceProbabilities.length - 1; i >= 0; i--) {
-      // Look at most recent probabilities first
-      let p = this.voiceProbabilities[i];
+//    // Check if we've gotten past our silence threshold, and therefore have
+//    // some audio to chunk and broadcast.
+//    for (let i = this.voiceProbabilities.length - 1; i >= 0; i--) {
+//      // Look at most recent probabilities first
+//      let p = this.voiceProbabilities[i];
 
-      let isUnderVoiceThreshold = p.value < this.voiceThreshold;
-      let isWithinSilenceThreshold =
-        p.timestamp >= latestVoiceTimestamp - this.silenceThreshold;
+//      let isUnderVoiceThreshold = p.value < this.voiceThreshold;
+//      let isWithinSilenceThreshold =
+//        p.timestamp >= latestVoiceTimestamp - this.silenceThreshold;
 
-      // OK, still within our silence bounds, keep checking...
-      if (isUnderVoiceThreshold && isWithinSilenceThreshold) continue;
+//      // OK, still within our silence bounds, keep checking...
+//      if (isUnderVoiceThreshold && isWithinSilenceThreshold) continue;
 
-      // Sucesss! We've satisfied our silence limit and found no speech, so we can move onto chunking
-      if (isUnderVoiceThreshold && !isWithinSilenceThreshold) break;
+//      // Sucesss! We've satisfied our silence limit and found no speech, so we can move onto chunking
+//      if (isUnderVoiceThreshold && !isWithinSilenceThreshold) break;
 
-      // Uh oh, there's speech in our silence bounds, let's exit and wait for more audio data
-      if (!isUnderVoiceThreshold) return;
-    }
+//      // Uh oh, there's speech in our silence bounds, let's exit and wait for more audio data
+//      if (!isUnderVoiceThreshold) return;
+//    }
 
-    // Wait a minute... has it just been silent since the last pause though?
-    let previousPauseTimestamp =
-      this.previousPauseTimestamp ?? earliestVoiceTimestamp;
-    for (let i = this.voiceProbabilities.length - 1; i >= 0; i--) {
-      let p = this.voiceProbabilities[i];
+//    // Wait a minute... has it just been silent since the last pause though?
+//    let previousPauseTimestamp =
+//      this.previousPauseTimestamp ?? earliestVoiceTimestamp;
+//    for (let i = this.voiceProbabilities.length - 1; i >= 0; i--) {
+//      let p = this.voiceProbabilities[i];
 
-      let isUnderVoiceThreshold = p.value < this.voiceThreshold;
-      let isPartOfPreviousPause = p.timestamp > previousPauseTimestamp;
+//      let isUnderVoiceThreshold = p.value < this.voiceThreshold;
+//      let isPartOfPreviousPause = p.timestamp > previousPauseTimestamp;
 
-      // Still silence, nothing to see here, keep looking...
-      if (isUnderVoiceThreshold && isPartOfPreviousPause) continue;
+//      // Still silence, nothing to see here, keep looking...
+//      if (isUnderVoiceThreshold && isPartOfPreviousPause) continue;
 
-      // Ok we've found the end of the previous pause, but there's still no speech.
-      // Let's exit and wait for more audio data
-      if (isUnderVoiceThreshold && !isPartOfPreviousPause) return;
+//      // Ok we've found the end of the previous pause, but there's still no speech.
+//      // Let's exit and wait for more audio data
+//      if (isUnderVoiceThreshold && !isPartOfPreviousPause) return;
 
-      // Alright cool, we have some voice audio to chunk!
-      if (!isUnderVoiceThreshold) break;
-    }
+//      // Alright cool, we have some voice audio to chunk!
+//      if (!isUnderVoiceThreshold) break;
+//    }
 
-    // Ok let's broadcast the audio chunk data
-    let chunkStart = Math.max(
-      previousPauseTimestamp - this.silenceThreshold, // Add a lil' sprinkle of silence to the beginning
-      earliestVoiceTimestamp,
-    );
-    let chunkEnd = latestVoiceTimestamp;
-    // TODO: This probably needs some performance improvements
-    let chunk = this.audioSamples.filter(
-      (sample) =>
-        sample.timestamp >= chunkStart && sample.timestamp <= chunkEnd,
-    );
+//    // Ok let's broadcast the audio chunk data
+//    let chunkStart = Math.max(
+//      previousPauseTimestamp - this.silenceThreshold, // Add a lil' sprinkle of silence to the beginning
+//      earliestVoiceTimestamp,
+//    );
+//    let chunkEnd = latestVoiceTimestamp;
+//    // TODO: This probably needs some performance improvements
+//    let chunk = this.audioSamples.filter(
+//      (sample) =>
+//        sample.timestamp >= chunkStart && sample.timestamp <= chunkEnd,
+//    );
 
-    // Scrub any silence from the beginning and end of the chunk
-    let startIndex = 0;
-    let endIndex = chunk.length - 1;
+//    // Scrub any silence from the beginning and end of the chunk
+//    let startIndex = 0;
+//    let endIndex = chunk.length - 1;
 
-    // Work our way inwards, scrubbing out silence as we go
-    while (
-      chunk[startIndex].value < this.scrubThresholdLimit &&
-      startIndex < endIndex
-    )
-      startIndex++;
-    while (
-      chunk[endIndex].value < this.scrubThresholdLimit &&
-      startIndex < endIndex
-    )
-      endIndex--;
-    if (startIndex == endIndex) return; // We've only got silence, so don't bother broadcasting
+//    // Work our way inwards, scrubbing out silence as we go
+//    while (
+//      chunk[startIndex].value < this.scrubThresholdLimit &&
+//      startIndex < endIndex
+//    )
+//      startIndex++;
+//    while (
+//      chunk[endIndex].value < this.scrubThresholdLimit &&
+//      startIndex < endIndex
+//    )
+//      endIndex--;
+//    if (startIndex == endIndex) return; // We've only got silence, so don't bother broadcasting
 
-    chunkStart = Math.max(
-      chunkStart,
-      chunk[startIndex].timestamp - this.scrubThresholdTime,
-    );
-    chunkEnd = Math.min(
-      chunkEnd,
-      chunk[endIndex].timestamp + this.scrubThresholdTime,
-    );
-    chunk = this.audioSamples.filter(
-      (sample) =>
-        sample.timestamp >= chunkStart && sample.timestamp <= chunkEnd,
-    );
+//    chunkStart = Math.max(
+//      chunkStart,
+//      chunk[startIndex].timestamp - this.scrubThresholdTime,
+//    );
+//    chunkEnd = Math.min(
+//      chunkEnd,
+//      chunk[endIndex].timestamp + this.scrubThresholdTime,
+//    );
+//    chunk = this.audioSamples.filter(
+//      (sample) =>
+//        sample.timestamp >= chunkStart && sample.timestamp <= chunkEnd,
+//    );
 
-    this.previousPauseTimestamp = chunkEnd;
-    window.dispatchEvent(
-      new CustomEvent("userAudioUtterance", { detail: chunk }),
-    );
-  }
-}
+//    this.previousPauseTimestamp = chunkEnd;
+//    window.dispatchEvent(
+//      new CustomEvent("userAudioUtterance", { detail: chunk }),
+//    );
+//  }
+//}
