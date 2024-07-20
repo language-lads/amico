@@ -1,0 +1,8 @@
+it:
+  time:
+    formats:
+      long: "%Y-%m-%d %H:%M:%S"
+  start: "Inizia"
+  home: "Pagina iniziale"
+  admin: "Amministratore"
+  sign_out: "Esci"

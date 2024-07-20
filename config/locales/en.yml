@@ -36,3 +36,7 @@ en:
   time:
     formats:
       long: "%Y-%m-%d %H:%M:%S"
+  start: "Start"
+  home: "Home"
+  admin: "Admin"
+  sign_out: "Sign out"

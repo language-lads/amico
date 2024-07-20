@@ -30,5 +30,8 @@ module Amico
 
     # Don't show a bunch of audio data in the logs
     config.filter_parameters += %i[audio_samples]
+
+    config.i18n.available_locales = %i[en it de]
+    config.i18n.default_locale = :en
   end
 end

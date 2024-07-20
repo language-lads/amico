@@ -18,7 +18,6 @@
 
   <body>
     <section class="hero is-fullheight">
-      <!-- Hero head: will stick at the top -->
       <div class="hero-head">
         <header class="navbar" data-controller="navbar">
           <div class="container">
@@ -26,30 +25,32 @@
               <div class="navbar-item">
                 <%= link_to "Amico", home_index_path, class: "title is-3" %>
               </div>
-              <span
-                class="navbar-burger"
-                data-navbar-target="burger"
-                data-action="click->navbar#toggle"
-              >
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-              </span>
+              <% if user_signed_in? %>
+                <span
+                  class="navbar-burger"
+                  data-navbar-target="burger"
+                  data-action="click->navbar#toggle"
+                >
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </span>
+              <% end %>
             </div>
             <div data-navbar-target="menu" class="navbar-menu">
               <% if user_signed_in? %>
                 <div class="navbar-end">
-                  <%= link_to "Home", home_index_path, class: "navbar-item" %>
+                  <%= link_to t("home"), home_index_path, class: "navbar-item" %>
                   <% if current_user.admin? %>
-                    <%= link_to "Admin", admin_index_path, class: "navbar-item" %>
+                    <%= link_to t("admin"), admin_index_path, class: "navbar-item" %>
                   <% end %>
                   <div class="navbar-item">
                     <%= button_to destroy_user_session_path, 
                       method: :delete, 
                       class: "button is-link", 
                       data: { 'turbo-submits-with': '...'} do %>
-                      <strong>Sign out</strong>
+                      <strong><%= t("sign_out") %></strong>
                     <% end %>
                   </div>
                 </div>
@@ -60,7 +61,7 @@
       </div>
       <!-- Hero content: will be in the middle -->
       <div class="hero-body">
-        <div class="container has-text-centered">
+        <div class="container">
           <%= yield %>
         </div>
       </div>
