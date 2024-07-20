@@ -65,6 +65,9 @@ gem 'local_time'
 # For doing ajaxy stuff [https://github.com/rails/requestjs-rails]
 gem 'requestjs-rails'
 
+# For working with wav files [https://github.com/jstrait/wavefile]
+gem 'wavefile'
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'debug', platforms: %i[mri windows]

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ConversationsController < ApplicationController
-  before_action :set_conversation, only: %i[show edit update destroy]
+  before_action :set_conversation, only: %i[show edit update destroy update_audio]
 
   # GET /conversations or /conversations.json
   def index
@@ -32,6 +32,14 @@ class ConversationsController < ApplicationController
         format.json { render json: @conversation.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  # PATCH /conversations/1/audio
+  def update_audio
+    @conversation = Conversation.find(params[:id])
+    # @conversation.audio.attach(params[:audio])
+    Rails.logger.debug('update_audio')
+    Rails.logger.debug(@conversation)
   end
 
   # PATCH/PUT /conversations/1 or /conversations/1.json

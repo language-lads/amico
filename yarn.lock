@@ -203,6 +203,11 @@
   resolved "https://registry.yarnpkg.com/@rails/actioncable/-/actioncable-7.1.3.tgz#4db480347775aeecd4dde2405659eef74a458881"
   integrity sha512-ojNvnoZtPN0pYvVFtlO7dyEN9Oml1B6IDM+whGKVak69MMYW99lC2NOWXWeE3bmwEydbP/nn6ERcpfjHVjYQjA==
 
+"@rails/actioncable@^7.1.3-4":
+  version "7.1.3-4"
+  resolved "https://registry.yarnpkg.com/@rails/actioncable/-/actioncable-7.1.3-4.tgz#a2ecc3b6a20ab35eeadecaa590e3ef8193e08272"
+  integrity sha512-54K+dO4wvL1FVnw8XFRkY8VZXTU9HdjB5QCd2dNDAkE9cJRD8bBrQZAi8zm5npL2sKGKwOSGmfZrXFE12LMYGA==
+
 "@rails/request.js@^0.0.9":
   version "0.0.9"
   resolved "https://registry.yarnpkg.com/@rails/request.js/-/request.js-0.0.9.tgz#89e2a575405dc07eb8a9b3d2fe04289e1f057cd0"
@@ -224,6 +229,11 @@
   integrity sha512-MdiXf+nDuMvY0gJKxyfZ7/6UFsETO7mGKF54MVD/ekJS6HdFtpZFBgrh6Pseu64XTb2MLyFPlbW6hj8HYRQNOQ==
   dependencies:
     undici-types "~5.26.4"
+
+"@types/recordrtc@^5.6.14":
+  version "5.6.14"
+  resolved "https://registry.yarnpkg.com/@types/recordrtc/-/recordrtc-5.6.14.tgz#532399bf35043f7956c46bb51016188863f8d60b"
+  integrity sha512-Reiy1sl11xP0r6w8DW3iQjc1BgXFyNC7aDuutysIjpFoqyftbQps9xPA2FoBkfVXpJM61betgYPNt+v65zvMhA==
 
 "@types/web@^0.0.150":
   version "0.0.150"
@@ -1310,6 +1320,11 @@ readdirp@~3.6.0:
   integrity sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==
   dependencies:
     picomatch "^2.2.1"
+
+recordrtc@^5.6.2:
+  version "5.6.2"
+  resolved "https://registry.yarnpkg.com/recordrtc/-/recordrtc-5.6.2.tgz#48fc214b35084973ccce82c6251198b5742bc327"
+  integrity sha512-1QNKKNtl7+KcwD1lyOgP3ZlbiJ1d0HtXnypUy7yq49xEERxk31PHvE9RCciDrulPCY7WJ+oz0R9hpNxgsIurGQ==
 
 regenerator-runtime@^0.11.0:
   version "0.11.1"

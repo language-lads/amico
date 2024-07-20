@@ -27,5 +27,8 @@ module Amico
     # config.eager_load_paths << Rails.root.join("extras")
 
     config.active_job.queue_adapter = :good_job
+
+    # Don't show a bunch of audio data in the logs
+    config.filter_parameters += %i[audio_samples]
   end
 end

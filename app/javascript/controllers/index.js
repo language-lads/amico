@@ -2,13 +2,17 @@
 // Run that command whenever you add a new controller or create them with
 // ./bin/rails generate stimulus controllerName
 
-import { application } from "./application"
+import { application } from "./application";
 
-import ChatController from "./chat_controller"
-application.register("chat", ChatController)
+// Use these as resources when making new Stimulus controllers
+// https://betterstimulus.com/
+// https://github.com/stimulus-use/stimulus-use
 
-import ConversationController from "./conversation_controller"
-application.register("conversation", ConversationController)
+import ChatController from "./chat_controller";
+application.register("chat", ChatController);
 
-import LanguageController from "./language_controller"
-application.register("language", LanguageController)
+import ConversationController from "./conversation_controller";
+application.register("conversation", ConversationController);
+
+import LanguageController from "./language_controller";
+application.register("language", LanguageController);

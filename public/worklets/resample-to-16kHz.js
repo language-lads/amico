@@ -18,12 +18,12 @@ class ResampleTo16kHz extends AudioWorkletProcessor {
        * @type {MediaTrackSettings}
        * @public
        */
-      this.trackSettings = e.data;
+      this.audioSettings = e.data;
 
       // Create a new resampler
       const { create, ConverterType } = globalThis.LibSampleRate;
-      let nChannels = this.trackSettings.channelCount || 1;
-      let inputSampleRate = this.trackSettings.sampleRate;
+      let nChannels = this.audioSettings.channelCount || 1;
+      let inputSampleRate = this.audioSettings.sampleRate;
       let outputSampleRate = 16000; // kHz
       create(nChannels, inputSampleRate, outputSampleRate, {
         converterType: ConverterType.SRC_SINC_BEST_QUALITY, // or some other quality
@@ -41,21 +41,26 @@ class ResampleTo16kHz extends AudioWorkletProcessor {
    */
   process(inputs, _outputs, _parameters) {
     const input = inputs[0][0];
-    const resampledValues = Array.from(this.sampler.full(input));
-    const timestamp = Date.now() / 1000; // Decimal seconds
+    //this.port.postMessage(Array.from(input));
 
-    // Add timestamps to the resampled values, noting that the
-    // the timestamp above corresponds to last sample in the input
-    const resampledValuesWithTimestamps = resampledValues.map(
-      (value, index) => {
-        return {
-          value,
-          timestamp: timestamp - (resampledValues.length - index) / 16000,
-        };
-      },
-    );
+    //const resampledValues = Array.from(this.sampler.full(input));
+    //this.port.postMessage(resampledValues);
 
-    this.buffer.push(...resampledValuesWithTimestamps);
+    //const resampledValues = Array.from(this.sampler.full(input));
+    //const timestamp = Date.now() / 1000; // Decimal seconds
+
+    //// Add timestamps to the resampled values, noting that the
+    //// the timestamp above corresponds to last sample in the input
+    //const resampledValuesWithTimestamps = resampledValues.map(
+    //  (value, index) => {
+    //    return {
+    //      value,
+    //      timestamp: timestamp - (resampledValues.length - index) / 16000,
+    //    };
+    //  },
+    //);
+
+    this.buffer.push(...Array.from(this.sampler.full(input)));
     if (this.buffer.length >= BUFFER_SIZE) {
       // Take the first BUFFER_SIZE samples
       this.port.postMessage(this.buffer.slice(0, BUFFER_SIZE));
