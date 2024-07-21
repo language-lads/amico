@@ -1,5 +1,4 @@
 import { Controller } from "@hotwired/stimulus";
-import { patch } from "@rails/request.js";
 import consumer from "../channels/consumer";
 
 const STREAM_CONTEXT_OPTIONS: AudioContextOptions = {
@@ -39,11 +38,15 @@ export default class extends Controller {
 
   connect() {
     // Connect to the conversation websocket channel
+    const classThis = this;
     this.channel = consumer.subscriptions.create(
       { channel: "ConversationChannel", id: this.conversationIdValue },
       {
         // When the websocket is ready, start our conversation
-        connected: this.startConversation.bind(this),
+        connected() {
+          console.log("connec");
+          classThis.startConversation.call(classThis);
+        },
 
         disconnected() {
           // Called when the subscription has been terminated by the server
@@ -64,9 +67,9 @@ export default class extends Controller {
   }
 
   startConversation() {
-		console.log('starting conversation');
+    console.log("starting conversation");
     this.stopConversation(); // Cleanup any previous conversation
-		console.log('stopped previous conversation');
+    console.log("stopped previous conversation");
     if (!this.canRecordFromMicrophone()) return;
     this.startMicrophoneStream().catch((error) => {
       console.error("Could not start the microphone", error);

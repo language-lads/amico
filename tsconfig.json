@@ -4,8 +4,11 @@
 		"checkJs": true,
 		"allowJs": true,
 		"noEmit": true,
-		"skipLibCheck": true
-	},
+		"skipLibCheck": true,
+		"lib": [
+			"es2015"
+		]
+ },
 	"include": [
 		"app/javascript/**/*"
 	],
