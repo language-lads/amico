@@ -21,7 +21,7 @@ class ConversationsController < ApplicationController
 
   # POST /conversations or /conversations.json
   def create
-    @conversation = Conversation.with_users_language
+    @conversation = Conversation.with_users_language(current_user)
 
     respond_to do |format|
       if @conversation.save
