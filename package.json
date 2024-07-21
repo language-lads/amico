@@ -15,22 +15,18 @@
 		"chartjs-plugin-annotation": "^3.0.1",
 		"esbuild": "^0.23.0",
 		"local-time": "^3.0.2",
-		"onnxruntime-web": "1.18.0",
-		"recordrtc": "^5.6.2",
 		"sass": "^1.77.6",
 		"typescript": "^5.5.2"
 	},
 	"scripts": {
-		"build": "yarn build:wasm && esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets",
-		"build:css": "sass ./app/assets/stylesheets/application.bulma.scss:./app/assets/builds/application.css --no-source-map --load-path=node_modules",
-		"build:wasm": "cpx node_modules/@ratchet-ml/ratchet-web/ratchet-web_bg.wasm public/wasm"
+		"build": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets",
+		"build:css": "sass ./app/assets/stylesheets/application.bulma.scss:./app/assets/builds/application.css --no-source-map --load-path=node_modules"
 	},
 	"engines": {
 		"node": "20.11.1",
 		"yarn": "1.22.21"
 	},
 	"devDependencies": {
-		"@types/recordrtc": "^5.6.14",
 		"cpx": "^1.5.0"
 	}
 }

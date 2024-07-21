@@ -35,4 +35,11 @@ task test: %i[environment] do
   sh 'bundle exec rails test'
 end
 
+task cleanup: :environment do
+  # Remove all empty directories in /storage
+  Dir.glob(Rails.root.join('storage/**/*').to_s).sort_by(&:length).reverse.each do |x|
+    Dir.rmdir(x) if File.directory?(x) && Dir.empty?(x)
+  end
+end
+
 Rails.application.load_tasks

@@ -38,8 +38,6 @@ export default class extends Controller {
   declare channel: any;
 
   connect() {
-    this.stopConversation();
-    if (!this.canRecordFromMicrophone()) return;
     // Connect to the conversation websocket channel
     this.channel = consumer.subscriptions.create(
       { channel: "ConversationChannel", id: this.conversationIdValue },
@@ -66,7 +64,9 @@ export default class extends Controller {
   }
 
   startConversation() {
+		console.log('starting conversation');
     this.stopConversation(); // Cleanup any previous conversation
+		console.log('stopped previous conversation');
     if (!this.canRecordFromMicrophone()) return;
     this.startMicrophoneStream().catch((error) => {
       console.error("Could not start the microphone", error);
@@ -78,19 +78,6 @@ export default class extends Controller {
     return navigator.mediaDevices
       .getUserMedia(STREAM_CONSTRAINTS)
       .then(async (stream) => {
-        //window.audioStream = stream; // Store globally so we can access it / stop it later
-        //var recorder = new StereoAudioRecorder(stream, {
-        //  sampleRate: 48000,
-        //  numberOfAudioChannels: 1,
-        //  //bufferSize: 4096,
-        //  ondataavailable: function (blob) {
-        //    console.log("blob", blob);
-        //  },
-        //  timeSlice: 500, // concatenate intervals based blobs
-        //});
-        //recorder.record();
-        ////recorder.stop(() => {});
-
         window.audioStream = stream; // Store globally so we can access it / stop it later
 
         this.assertOnlyOneAudioTrack(stream);
