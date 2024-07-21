@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class ConversationsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_conversation, only: %i[show edit update destroy update_audio]
 
   # GET /conversations or /conversations.json
