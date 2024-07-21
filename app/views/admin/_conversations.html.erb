@@ -17,12 +17,24 @@
         <td><%= conversation.id %></td>
         <td><%= conversation.user.email %></td>
         <td><%= conversation.status %></td>
-        <td>
+        <td class="is-vcentered">
           <% if conversation.audio.attached? %>
-            <audio controls>
-              <source src="<%= rails_blob_path(conversation.audio) %>" type="audio/mpeg">
-              Your browser does not support the audio element.
-            </audio>
+            <div data-controller="audio-playback" class="is-flex is-align-items-center">
+              <audio
+                controls
+                class="is-hidden"
+                data-action="canplaythrough->audio-playback#loaded"
+                data-audio-playback-target="audio"
+              >
+                <source src="<%= rails_blob_path(conversation.audio) %>" type="audio/mpeg">
+                Your browser does not support the audio element.
+              </audio>
+              <progress
+                class="progress is-small is-info"
+                max="100"
+                data-audio-playback-target="loading"
+              ></progress>
+            </div>
           <% end %>
         </td>
         <td><%= conversation.language %></td>
