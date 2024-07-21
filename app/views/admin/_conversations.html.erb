@@ -18,17 +18,16 @@
         <td><%= conversation.user.email %></td>
         <td><%= conversation.status %></td>
         <td>
-          <audio controls>
-            <source src="<%= rails_blob_path(conversation.audio) %>" type="audio/mpeg">
-            Your browser does not support the audio element.
-          </audio>
+          <% if conversation.audio.attached? %>
+            <audio controls>
+              <source src="<%= rails_blob_path(conversation.audio) %>" type="audio/mpeg">
+              Your browser does not support the audio element.
+            </audio>
+          <% end %>
         </td>
         <td><%= conversation.language %></td>
         <td>
-          <%= button_to "Delete",
-          conversation,
-          class: "button is-danger",
-          method: :delete %>
+          <%= button_to "Delete", conversation, class: "button is-danger", method: :delete %>
         </td>
       </tr>
     <% end %>

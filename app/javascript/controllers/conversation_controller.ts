@@ -44,7 +44,6 @@ export default class extends Controller {
       {
         // When the websocket is ready, start our conversation
         connected() {
-          console.log("connec");
           classThis.startConversation.call(classThis);
         },
 
@@ -67,9 +66,7 @@ export default class extends Controller {
   }
 
   startConversation() {
-    console.log("starting conversation");
     this.stopConversation(); // Cleanup any previous conversation
-    console.log("stopped previous conversation");
     if (!this.canRecordFromMicrophone()) return;
     this.startMicrophoneStream().catch((error) => {
       console.error("Could not start the microphone", error);
@@ -101,10 +98,11 @@ export default class extends Controller {
           sampleRate: audioStreamContext.sampleRate,
           channelCount: audioTrack.getSettings().channelCount,
         });
+        let order = 0;
         resampleNode.port.onmessage = async (e) => {
           // Send the audio samples to the server
           const data: AudioSamples = e.data;
-          this.channel.send({ audio_samples: data });
+          this.channel.send({ audio_samples: data, order: order++ });
 
           //this.channel.send({ audio_samples: data.map((x) => x.value) });
           //await patch(this.updateAudioPathValue, {
