@@ -11,8 +11,6 @@ class ConversationChannel < ApplicationCable::Channel
     @format = Format.new(:mono, :float, 16_000)
     @filename = "conversation_recording_#{params['id']}.wav"
     @content_type = 'audio/wav'
-    # @cache = ActiveSupport::Cache::RedisCacheStore.new
-    @audio_samples = []
     clear_audio_samples
   end
 
@@ -33,26 +31,16 @@ class ConversationChannel < ApplicationCable::Channel
 
   private
 
-  # ActionCable doesn't guarantee the order of messages, so we need to sort them before
-  # writing the audio file
+  # ActionCable doesn't guarantee the order of messages, so we need to sort them before writing the audio file
   def sorted_audio_samples
-    audio_data.sort_by { |d| d[:order] }.pluck('audio_samples').flatten(1)
-  end
-
-  def audio_data
-    @audio_samples
-    # @cache.read("conversation_#{params['id']}") || []
+    @audio_samples.sort_by { |d| d[:order] }.pluck('audio_samples').flatten(1)
   end
 
   def append_audio_data(data)
     @audio_samples.push(data)
-    # array = audio_data
-    # array.push(data)
-    # @cache.write("conversation_#{params['id']}", array)
   end
 
   def clear_audio_samples
     @audio_samples = []
-    # @cache.write("conversation_#{params['id']}", [])
   end
 end
