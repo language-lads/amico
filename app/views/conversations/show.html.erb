@@ -1,19 +1,13 @@
-<p style="color: green"><%= notice %></p>
-<%= link_to "Go back", home_index_path %>
-
-<%= content_tag :div, data: { 
+<div class="container has-text-centered">
+  <%= content_tag :div, data: { 
   controller: "conversation",
   'conversation-update-audio-path-value': update_audio_conversation_path(@conversation),
   'conversation-conversation-id-value': @conversation.id } do %>
-  conversationing
-<% end %>
-
-<%= render @conversation %>
-
-<div>
-  <%= link_to "Edit this conversation", edit_conversation_path(@conversation) %>
-  |
-  <%= link_to "Back to conversations", conversations_path %>
-
-  <%= button_to "Destroy this conversation", @conversation, method: :delete %>
+    Start speaking...
+  <% end %>
+  <br/>
+  <br/>
+  <%= button_to home_index_path, class: "button is-link", method: :get do %>
+    <strong><%= t("finish") %></strong>
+  <% end %>
 </div>
