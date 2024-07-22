@@ -20,13 +20,12 @@ class ConversationChannel < ApplicationCable::Channel
   end
 
   def unsubscribed
-    conversation = Conversation.find(params['id'])
-
     Tempfile.create do |f|
       f.binmode
-      Writer.new(f, @format).write(Buffer.new(@audio_samples, @format))
-      conversation.audio.attach(io: File.open(f.path), filename: @filename, content_type: @content_type)
-      conversation.update!(status: :completed)
+      samples = @audio_samples.pluck('audio_samples').flatten(1)
+      Writer.new(f, @format).write(Buffer.new(samples, @format))
+      @conversation.audio.attach(io: File.open(f.path), filename: @filename, content_type: @content_type)
+      @conversation.update!(status: :completed)
     end
     @rev_ai_client.disconnect
     clear_audio_samples
