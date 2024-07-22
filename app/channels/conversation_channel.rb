@@ -11,17 +11,23 @@ class ConversationChannel < ApplicationCable::Channel
     @format = Format.new(:mono, :float, 16_000)
     @filename = "conversation_recording_#{params['id']}.wav"
     @content_type = 'audio/wav'
+    @rev_ai_client = RevAiClient.new(Rails.application.credentials.dig(:rev_ai, :access_token))
+    @rev_ai_client.connect
     clear_audio_samples
   end
 
   def unsubscribed
     conversation = Conversation.find(params['id'])
+
+    File.binwrite('conversation.raw', sorted_audio_samples.pack('e*'))
+
     Tempfile.create do |f|
       f.binmode
       Writer.new(f, @format).write(Buffer.new(sorted_audio_samples, @format))
       conversation.audio.attach(io: File.open(f.path), filename: @filename, content_type: @content_type)
       conversation.update!(status: :completed)
     end
+    @rev_ai_client.disconnect
     clear_audio_samples
   end
 

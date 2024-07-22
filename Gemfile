@@ -71,6 +71,9 @@ gem 'wavefile'
 # For ActiveStorage on Google Cloud [https://github.com/googleapis/google-cloud-ruby/tree/main/google-cloud-storage]
 gem 'google-cloud-storage'
 
+# For interacting with the websockets [https://github.com/faye/faye-websocket-ruby]
+gem 'faye-websocket'
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'debug', platforms: %i[mri windows]

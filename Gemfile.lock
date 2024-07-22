@@ -119,10 +119,14 @@ GEM
     erubi (1.13.0)
     et-orbi (1.2.11)
       tzinfo
+    eventmachine (1.2.7)
     faraday (2.9.2)
       faraday-net_http (>= 2.0, < 3.2)
     faraday-net_http (3.1.0)
       net-http
+    faye-websocket (0.11.3)
+      eventmachine (>= 0.12.0)
+      websocket-driver (>= 0.5.1)
     foreman (0.88.1)
     fugit (1.11.0)
       et-orbi (~> 1, >= 1.2.11)
@@ -428,6 +432,7 @@ DEPENDENCIES
   debug
   devise
   erb-formatter
+  faye-websocket
   foreman
   good_job
   google-cloud-storage
