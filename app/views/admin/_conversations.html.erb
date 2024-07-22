@@ -8,6 +8,7 @@
       <th>Status</th>
       <th>Audio</th>
       <th>Language</th>
+      <th>Transcription</th>
       <th></th>
     </tr>
   </thead>
@@ -38,6 +39,7 @@
           <% end %>
         </td>
         <td><%= conversation.language %></td>
+        <td><%= conversation.transcription_text %></td>
         <td>
           <%= button_to "Delete", conversation, class: "button is-danger", method: :delete %>
         </td>
