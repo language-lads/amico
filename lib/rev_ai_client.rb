@@ -92,7 +92,7 @@ if Rails.configuration.mock_rev_ai_client
       @thread = Thread.new do
         EM.run do
           # Periodically call the on_final_transcript callback with a random transcript
-          EventMachine.add_periodic_timer(1) do
+          EventMachine.add_periodic_timer(5) do
             on_final_transcript.call({ 'type' => 'final',
                                        'elements' => [{ 'type' => 'text', 'value' => 'hello ' }] })
           end
