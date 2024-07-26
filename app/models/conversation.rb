@@ -19,6 +19,21 @@ class Conversation < ApplicationRecord
   end
 
   after_update do
-    broadcast_update_to self, partial: 'conversations/chat', target: "#{dom_id(self)}-chat"
+    broadcast_replace_to self, partial: 'conversations/chat', target: "#{dom_id(self)}-chat"
+  end
+
+  def receive_transcription(data)
+    transcription.push(data)
+    add_user_utterance(data['elements'].pluck('value').join)
+    save!
+  end
+
+  def add_user_utterance(utterance)
+    # history.push({ speaker: 'assistant', utterance: "sdfsdfsf#{history.length}" }) if history.length.even?
+    if !history.empty? && history.last['speaker'] == 'user'
+      history.last['utterance'] += utterance
+    else
+      history.push({ speaker: 'user', utterance: })
+    end
   end
 end

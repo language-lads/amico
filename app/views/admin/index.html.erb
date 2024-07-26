@@ -1,21 +1,23 @@
-<div class="container">
-  <h1 class="title is-1">Admin Dashboard</h1>
+<div class="hero-body">
+  <div class="container">
+    <h1 class="title is-1">Admin Dashboard</h1>
 
-  <%# Create a table of all users %>
-  <style>
+    <%# Create a table of all users %>
+    <style>
 table, th, td {
   border: 1px solid black;
   border-collapse: collapse;
   padding: 5px;
 }
-  </style>
+    </style>
 
-  <br/>
-  <br/>
-  <%= render "users" %>
-  <br/>
-  <%= render "conversations" %>
-  <br/>
+    <br/>
+    <br/>
+    <%= render "users" %>
+    <br/>
+    <%= render "conversations" %>
+    <br/>
 
-  <%= link_to "Back", home_index_path %>
+    <%= link_to "Back", home_index_path %>
+  </div>
 </div>

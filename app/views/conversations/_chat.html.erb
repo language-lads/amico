@@ -1,4 +1,21 @@
-<div id="<%= dom_id conversation %>-chat">
-  asdf
-  <%= conversation.transcription_text %>
+<div
+  id="<%= dom_id conversation %>-chat"
+  class="box mt-3 has-background-grey-darker chat-window"
+  data-controller="chat"
+>
+  <% conversation.history.each do |message| %>
+    <div
+      class="
+        is-flex is-justify-content-<%= message['speaker'] == 'user' ? 'end' : 'start' %> mb-3
+      "
+    >
+      <div
+        class="
+          chat-message notification <%= message['speaker'] == 'user' ? 'is-link' : '' %>
+        "
+      >
+        <%= message["utterance"] %>
+      </div>
+    </div>
+  <% end %>
 </div>

@@ -1,43 +1,45 @@
-<div class="container has-text-centered">
-  <%= form_with(model: Conversation.new) do |form| %>
-    <%= form.button t("start"),
-                type: "submit",
-                class: "button is-primary is-large",
-                # We don't want multiple starts and stops of the conversation controller, so disable turbo
-                "data-turbo": "false" %>
-  <% end %>
-  <br/>
-  <br/>
-  <div class="dropdown is-large" data-controller="dropdown">
-    <div class="dropdown-trigger">
-      <button
-        class="button"
-        aria-haspopup="true"
-        aria-controls="dropdown-menu"
-        data-action="click->dropdown#toggle click@window->dropdown#close"
-      >
-        <span class="fi fi-<%= current_user.language_details[:flag_code] %>"></span>
-        <span class="px-3">
-          <%= current_user.language_details[:name] %>
-        </span>
-        <span class="icon is-small">
-          <i class="fas fa-angle-down" aria-hidden="true"></i>
-        </span>
-      </button>
-    </div>
-    <div class="dropdown-menu" id="dropdown-menu" role="menu">
-      <div class="dropdown-content">
-        <% User::LANGUAGE_DETAILS.sort_by { |language| language[:name] }.each do |language| %>
-          <%= button_to home_change_language_path,
+<div class="hero-body">
+  <div class="container has-text-centered">
+    <%= form_with(model: Conversation.new) do |form| %>
+      <%= form.button t("start"),
+                  type: "submit",
+                  class: "button is-link is-large",
+                  # We don't want multiple starts and stops of the conversation controller, so disable turbo
+                  "data-turbo": "false" %>
+    <% end %>
+    <br/>
+    <br/>
+    <div class="dropdown is-large" data-controller="dropdown">
+      <div class="dropdown-trigger">
+        <button
+          class="button"
+          aria-haspopup="true"
+          aria-controls="dropdown-menu"
+          data-action="click->dropdown#toggle click@window->dropdown#close"
+        >
+          <span class="fi fi-<%= current_user.language_details[:flag_code] %>"></span>
+          <span class="px-3">
+            <%= current_user.language_details[:name] %>
+          </span>
+          <span class="icon is-small">
+            <i class="fas fa-angle-down" aria-hidden="true"></i>
+          </span>
+        </button>
+      </div>
+      <div class="dropdown-menu" id="dropdown-menu" role="menu">
+        <div class="dropdown-content">
+          <% User::LANGUAGE_DETAILS.sort_by { |language| language[:name] }.each do |language| %>
+            <%= button_to home_change_language_path,
           method: :patch,
           params: {language: language[:code]},
           class: "dropdown-item" do %>
-            <span class="fi fi-<%= language[:flag_code] %>"></span>
-            <span class="has-text-centered is-flex-grow-1">
-              <%= language[:name] %>
-            </span>
+              <span class="fi fi-<%= language[:flag_code] %>"></span>
+              <span class="has-text-centered is-flex-grow-1">
+                <%= language[:name] %>
+              </span>
+            <% end %>
           <% end %>
-        <% end %>
+        </div>
       </div>
     </div>
   </div>

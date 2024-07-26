@@ -69,6 +69,8 @@ export default class extends Controller {
   }
 
   disconnect() {
+    if (this.statusValue == "completed") return;
+
     this.stopConversation();
     this.channel.unsubscribe();
   }

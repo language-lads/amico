@@ -40,7 +40,13 @@ class RevAiClient
 
           @ws.on :message do |event|
             response = JSON.parse(event.data)
-            on_final_transcript.call(response) if response['type'] == 'final'
+            if response['type'] == 'final'
+              # Add a space after every '.' and '?' to make the transcript more readable
+              response['elements'].each do |element|
+                element['value'] = element['value'].gsub(/([.?!])/, '\1 ')
+              end
+              on_final_transcript.call(response)
+            end
           end
 
           @ws.on :close do |event|
@@ -82,8 +88,6 @@ end
 # This can be used in development mode to test the client without connecting to the Rev.ai API
 if Rails.configuration.mock_rev_ai_client
   class RevAiClient
-    def initialize(_access_token, _language) end
-
     def connect(on_final_transcript)
       @thread = Thread.new do
         EM.run do

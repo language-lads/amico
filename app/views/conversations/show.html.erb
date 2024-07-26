@@ -1,17 +1,23 @@
-<%= turbo_stream_from @conversation %>
-<div class="container has-text-centered">
-  <%= content_tag :div, data: { 
-  controller: "conversation",
-  'conversation-update-audio-path-value': update_audio_conversation_path(@conversation),
-  'conversation-conversation-id-value': @conversation.id,
-  'conversation-status-value': @conversation.status } do %>
-
-    <%= t("start_speaking") %>
-  <% end %>
-  <br/>
-  <br/>
-  <%= button_to home_index_path, class: "button is-link", method: :get do %>
-    <strong><%= t("finish") %></strong>
-  <% end %>
-  <%= render partial: "chat", locals: { conversation: @conversation } %>
+<div class="hero-body is-align-items-stretch ">
+  <div class="container is-max-desktop">
+    <%= turbo_stream_from @conversation %>
+    <div class="is-flex is-flex-direction-column is-justify-content-space-between">
+      <%= content_tag :div, data: { 
+      controller: "conversation",
+      'conversation-update-audio-path-value': update_audio_conversation_path(@conversation),
+      'conversation-conversation-id-value': @conversation.id,
+      'conversation-status-value': @conversation.status } do %>
+        <%= render partial: "chat", locals: { conversation: @conversation } %>
+      <% end %>
+    </div>
+  </div>
+</div>
+<div class="hero-foot">
+  <div class="container">
+    <div class="is-flex is-justify-content-center mb-6">
+      <%= button_to home_index_path, class: "button is-success", method: :get do %>
+        <strong><%= t("finish") %></strong>
+      <% end %>
+    </div>
+  </div>
 </div>

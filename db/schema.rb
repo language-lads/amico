@@ -47,7 +47,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_20_041537) do
   end
 
   create_table "conversations", force: :cascade do |t|
-    t.jsonb "history"
+    t.jsonb "history", default: []
     t.jsonb "transcription", default: []
     t.bigint "user_id", null: false
     t.string "language", null: false

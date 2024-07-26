@@ -3,7 +3,7 @@
 class CreateConversations < ActiveRecord::Migration[7.1]
   def change
     create_table :conversations do |t|
-      t.jsonb :history
+      t.jsonb :history, default: []
       t.jsonb :transcription, default: []
       t.references :user, null: false, foreign_key: true
       t.string :language, null: false

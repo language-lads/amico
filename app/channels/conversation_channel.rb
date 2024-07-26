@@ -13,7 +13,7 @@ class ConversationChannel < ApplicationCable::Channel
     @filename = "conversation_recording_#{params['id']}.wav"
     @content_type = 'audio/wav'
     @rev_ai_client = RevAiClient.new(Rails.application.credentials.dig(:rev_ai, :access_token), @conversation.language)
-    @rev_ai_client.connect(method(:receive_transcription))
+    @rev_ai_client.connect(@conversation.method(:receive_transcription))
     @audio_samples = []
     @out_of_order_samples = []
     clear_audio_samples
@@ -53,12 +53,6 @@ class ConversationChannel < ApplicationCable::Channel
       append_audio_data(next_sample)
       @out_of_order_samples.delete(next_sample)
     end
-  end
-
-  def receive_transcription(data)
-    Rails.logger.debug { "Received transcription: #{data}" }
-    @conversation.transcription.push(data)
-    @conversation.save!
   end
 
   private
