@@ -109,4 +109,6 @@ Rails.application.configure do
     authentication: 'plain',
     enable_starttls_auto: true
   }
+
+  config.mock_rev_ai_client = false
 end
