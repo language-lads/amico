@@ -79,4 +79,7 @@ Rails.application.configure do
   config.action_mailer.default_url_options = { host: 'localhost', port: 3006 }
   config.action_mailer.delivery_method = :letter_opener
   config.action_mailer.perform_deliveries = true
+
+  # Mock out the Rev AI client in development
+  config.mock_rev_ai_client = true
 end

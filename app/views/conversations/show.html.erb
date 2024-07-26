@@ -1,8 +1,11 @@
+<%= turbo_stream_from @conversation %>
 <div class="container has-text-centered">
   <%= content_tag :div, data: { 
   controller: "conversation",
   'conversation-update-audio-path-value': update_audio_conversation_path(@conversation),
-  'conversation-conversation-id-value': @conversation.id } do %>
+  'conversation-conversation-id-value': @conversation.id,
+  'conversation-status-value': @conversation.status } do %>
+
     <%= t("start_speaking") %>
   <% end %>
   <br/>
@@ -10,4 +13,5 @@
   <%= button_to home_index_path, class: "button is-link", method: :get do %>
     <strong><%= t("finish") %></strong>
   <% end %>
+  <%= render partial: "chat", locals: { conversation: @conversation } %>
 </div>

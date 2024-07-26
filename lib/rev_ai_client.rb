@@ -15,8 +15,6 @@ class RevAiClient
     @content_type = 'audio/x-raw'
     @layout = 'interleaved'
     @sample_rate = 16_000
-    # @format = 'S16LE'
-    # 32-bit floating-point audio
     # We have to use this format for other languages according to the API
     # https://gstreamer.freedesktop.org/documentation/additional/design/mediatype-audio-raw.html?gi-language=c#formats
     # https://docs.rev.ai/api/streaming/requests/#language
@@ -25,11 +23,8 @@ class RevAiClient
     @channels = 1
     @url = "wss://api.rev.ai/speechtotext/v1/stream?access_token=#{@access_token}&content_type=#{@content_type};layout=#{@layout};rate=#{@sample_rate};format=#{@format};channels=#{@channels}&language=#{@language}"
     @thread = nil
+    # Lock so we can safely access the websocket from multiple threads
     @lock = Concurrent::ReadWriteLock.new
-  end
-
-  def ws=(websocket)
-    @lock.with_write_lock { @ws = websocket }
   end
 
   # Runs on a separate thread
@@ -66,24 +61,6 @@ class RevAiClient
     @lock.with_write_lock { @ws.send(data) }
   end
 
-  def ping
-    @lock.with_write_lock do
-      @ws.ping 'ping' do
-        Rails.logger.debug 'Pong received'
-      end
-    end
-  end
-
-  def stream
-    raw_audio_data = File.binread('./conversation.raw').bytes
-    @lock.with_write_lock do
-      raw_audio_data.each_slice(20_480) do |chunk|
-        @ws.send(chunk)
-      end
-    end
-    nil
-  end
-
   def disconnect
     @lock.with_write_lock { @ws.close }
     @thread.join
@@ -93,5 +70,38 @@ class RevAiClient
     float_format = WaveFile::Format.new(:mono, :float, 16_000)
     pcm_format = WaveFile::Format.new(:mono, :pcm_16, 16_000)
     WaveFile::Buffer.new(float32_array, float_format).convert(pcm_format).samples
+  end
+
+  private
+
+  def ws=(websocket)
+    @lock.with_write_lock { @ws = websocket }
+  end
+end
+
+# This can be used in development mode to test the client without connecting to the Rev.ai API
+if Rails.configuration.mock_rev_ai_client
+  class RevAiClient
+    def initialize(_access_token, _language) end
+
+    def connect(on_final_transcript)
+      @thread = Thread.new do
+        EM.run do
+          # Periodically call the on_final_transcript callback with a random transcript
+          EventMachine.add_periodic_timer(1) do
+            on_final_transcript.call({ 'type' => 'final',
+                                       'elements' => [{ 'type' => 'text', 'value' => 'hello ' }] })
+          end
+        end
+      end
+    end
+
+    def disconnect
+      # This probably doesn't work for multiple threads
+      EventMachine.stop_event_loop
+      @thread.join
+    end
+
+    def send(data) end
   end
 end

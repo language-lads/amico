@@ -1,6 +1,6 @@
 <h1 class="subtitle is-3">Conversations</h1>
 <br/>
-<table class="table">
+<table class="table is-striped is-fullwidth is-hoverable">
   <thead>
     <tr>
       <th>ID</th>
@@ -15,7 +15,9 @@
   <tbody>
     <% @conversations.each.sort_by(&:created_at).each do |conversation| %>
       <tr>
-        <td><%= conversation.id %></td>
+        <td>
+          <%= link_to conversation.id, conversation %>
+        </td>
         <td><%= conversation.user.email %></td>
         <td><%= conversation.status %></td>
         <td class="is-vcentered">
