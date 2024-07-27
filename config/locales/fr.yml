@@ -1,0 +1,10 @@
+fr:
+  time:
+    formats:
+      long: "%Y-%m-%d %H:%M:%S"
+  start: "Commencer"
+  home: "Accueil"
+  admin: "Admin"
+  sign_out: "Déconnexion"
+  finish: "Terminer"
+  start_speaking: "Commencez à parler..."

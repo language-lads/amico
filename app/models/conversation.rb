@@ -29,7 +29,7 @@ class Conversation < ApplicationRecord
       access_token: Rails.application.credentials.openai[:api_key],
       log_errors: true # Highly recommended in development, so you can see what errors OpenAI is returning. Not recommended in production because it could leak private data to your logs.
     )
-    language = user.language_details['name']
+    language = user.language_details[:english_name]
     messages = [{ role: 'system',
                   content: "You are an educated #{language} person. You are helping a friend of yours who does not speak very good #{language}, and will correct them where possible.  You ask clarifying questions when necessary. You only ever speak and use #{language} words. You are terse and to the point and do not use frivolous language or punctuation like exclamation marks. When giving your answer do not respond with more than a few sentences at a time, like a regular person would in a normal conversation. Never use punctuation like list dot points or numbered lists." }]
     history.each do |message|

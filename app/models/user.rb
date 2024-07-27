@@ -12,15 +12,23 @@ class User < ApplicationRecord
   LANGUAGE_DETAILS = [{
     code: 'en',
     name: 'English',
+    english_name: 'English',
     flag_code: 'gb'
   }, {
     code: 'it',
     name: 'Italiano',
+    english_name: 'Italian', # Needed when we do system prompts for the LLMs
     flag_code: 'it'
   }, {
     code: 'de',
     name: 'Deutsch',
+    english_name: 'German',
     flag_code: 'de'
+  }, {
+    code: 'fr',
+    name: 'Français',
+    english_name: 'French',
+    flag_code: 'fr'
   }].freeze
 
   def self.from_omniauth(auth)
