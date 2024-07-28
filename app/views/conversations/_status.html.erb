@@ -1,0 +1,33 @@
+<div
+  class="is-flex is-justify-content-space-between is-align-items-center mb-6"
+  id="<%= dom_id conversation %>-status"
+>
+  <div>
+    <% if conversation.initialising? %>
+      <progress class="progress is-large is-success" max="100" style="width:30vw">
+        <%= conversation.status %>
+      </progress>
+    <% elsif conversation.in_progress? %>
+      <div
+        class="
+          microphone-container is-flex is-flex-direction-column is-align-items-center
+          is-justify-content-centre
+        "
+      >
+        <i class="fa-solid fa-microphone"></i>
+      </div>
+    <% elsif conversation.completed? %>
+    <% else %>
+      Some sort of error :(
+    <% end %>
+  </div>
+  <%= button_to home_index_path, class: "button is-danger px-6", method: :get do %>
+    <span class="icon">
+      <% if conversation.completed? %>
+        <i class="fa-solid fa-arrow-left"></i>
+      <% else %>
+        <i class="fa-solid fa-square"></i>
+      <% end %>
+    </span>
+  <% end %>
+</div>

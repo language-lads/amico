@@ -1,4 +1,38 @@
+@use "bulma/sass/utilities/css-variables" as cv;
+@use "bulma/sass/utilities/mixins" as mx;
+
 // Prevent vertical scroll bar from appearing if not needed
 html {
   overflow-y: auto !important;
+}
+
+// Make the padding the same as the hero-body
+.hero-foot {
+  padding: cv.getVar("hero-body-padding");
+
+  @include mx.tablet {
+    padding: cv.getVar("hero-body-padding-tablet");
+  }
+
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+// Microphone loading animation
+.microphone-container {
+  /* Make the pulse effect a perfect circle */
+  font-size: 2.5rem;
+  margin-left: 1rem;
+  /* Loader 12 https://css-loaders.com/wavy/ */
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 #0004;
+  animation: l1 1s infinite;
+
+  @keyframes l1 {
+    100% {
+      box-shadow: 0 0 0 30px #0000;
+    }
+  }
 }

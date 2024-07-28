@@ -13,11 +13,7 @@
   </div>
 </div>
 <div class="hero-foot">
-  <div class="container">
-    <div class="is-flex is-justify-content-center mb-6">
-      <%= button_to home_index_path, class: "button is-success", method: :get do %>
-        <strong><%= t("finish") %></strong>
-      <% end %>
-    </div>
+  <div class="container is-max-desktop">
+    <%= render partial: "status", locals: { conversation: @conversation } %>
   </div>
 </div>

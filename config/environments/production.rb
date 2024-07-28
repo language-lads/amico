@@ -111,4 +111,5 @@ Rails.application.configure do
   }
 
   config.mock_rev_ai_client = false
+  config.mock_open_ai_client = false
 end

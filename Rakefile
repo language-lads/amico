@@ -11,7 +11,7 @@ task install: :environment do
   sh 'yarn install'
 end
 
-task dev: %i[environment install] do
+task dev: %i[environment install cleanup] do
   sh 'bundle exec rails db:migrate'
   sh 'bundle exec bin/dev'
 end

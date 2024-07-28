@@ -81,5 +81,6 @@ Rails.application.configure do
   config.action_mailer.perform_deliveries = true
 
   # Mock out the Rev AI client in development
-  config.mock_rev_ai_client = false
+  config.mock_rev_ai_client = true
+  config.mock_open_ai_client = true
 end

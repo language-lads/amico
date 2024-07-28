@@ -28,13 +28,14 @@ class RevAiClient
   end
 
   # Runs on a separate thread
-  def connect(on_final_transcript)
+  def connect(on_final_transcript, on_connection_ready)
     @thread = Thread.new do
       EM.run do
         @lock.with_write_lock do
           @ws = Faye::WebSocket::Client.new(@url)
 
           @ws.on :open do |_event|
+            on_connection_ready.call
             Rails.logger.debug 'Connected'
           end
 
@@ -88,13 +89,21 @@ end
 # This can be used in development mode to test the client without connecting to the Rev.ai API
 if Rails.configuration.mock_rev_ai_client
   class RevAiClient
-    def connect(on_final_transcript)
+    def initialize(_access_token, _language)
+      Rails.logger.debug('Mock RevAI client initialized')
+    end
+
+    def connect(on_final_transcript, on_connection_ready)
       @thread = Thread.new do
         EM.run do
-          # Periodically call the on_final_transcript callback with a random transcript
-          EventMachine.add_periodic_timer(5) do
-            on_final_transcript.call({ 'type' => 'final',
-                                       'elements' => [{ 'type' => 'text', 'value' => 'hello ' }] })
+          # Wait for 2 seconds before calling the on_connection_ready callback
+          EventMachine.add_timer(3) do
+            on_connection_ready.call
+            # Periodically call the on_final_transcript callback with a random transcript
+            EventMachine.add_periodic_timer(3) do
+              on_final_transcript.call({ 'type' => 'final',
+                                         'elements' => [{ 'type' => 'text', 'value' => 'hello ' }] })
+            end
           end
         end
       end

@@ -13,13 +13,14 @@ class ConversationChannel < ApplicationCable::Channel
     @filename = "conversation_recording_#{params['id']}.wav"
     @content_type = 'audio/wav'
     @rev_ai_client = RevAiClient.new(Rails.application.credentials.dig(:rev_ai, :access_token), @conversation.language)
-    @rev_ai_client.connect(@conversation.method(:receive_transcription))
+    @rev_ai_client.connect(@conversation.method(:receive_transcription), method(:on_transcription_service_ready))
     @audio_samples = []
     @out_of_order_samples = []
     clear_audio_samples
   end
 
   def unsubscribed
+    @rev_ai_client&.disconnect
     Tempfile.create do |f|
       f.binmode
       samples = @audio_samples.pluck('audio_samples').flatten(1)
@@ -27,8 +28,12 @@ class ConversationChannel < ApplicationCable::Channel
       @conversation.audio.attach(io: File.open(f.path), filename: @filename, content_type: @content_type)
       @conversation.update!(status: :completed)
     end
-    @rev_ai_client.disconnect
     clear_audio_samples
+  end
+
+  def on_transcription_service_ready
+    Rails.logger.debug('Transcription service ready')
+    @conversation.update!(status: :in_progress)
   end
 
   # ActionCable doesn't guarantee the order of messages, so we need to sort them before writing the audio file

@@ -20,30 +20,18 @@ class Conversation < ApplicationRecord
 
   after_update do
     broadcast_replace_to self, partial: 'conversations/chat', target: "#{dom_id(self)}-chat"
+    broadcast_replace_to self, partial: 'conversations/status', target: "#{dom_id(self)}-status"
   end
 
   def receive_transcription(data)
     transcription.push(data)
     add_user_utterance(data['elements'].pluck('value').join)
-    client = OpenAI::Client.new(
-      access_token: Rails.application.credentials.openai[:api_key],
-      log_errors: true # Highly recommended in development, so you can see what errors OpenAI is returning. Not recommended in production because it could leak private data to your logs.
+    client = OpenAiClient.new(
+      Rails.application.credentials.openai[:api_key],
+      user.language_details[:english_name],
+      true
     )
-    language = user.language_details[:english_name]
-    messages = [{ role: 'system',
-                  content: "You are an educated #{language} person. You are helping a friend of yours who does not speak very good #{language}, and will correct them where possible.  You ask clarifying questions when necessary. You only ever speak and use #{language} words. You are terse and to the point and do not use frivolous language or punctuation like exclamation marks. When giving your answer do not respond with more than a few sentences at a time, like a regular person would in a normal conversation. Never use punctuation like list dot points or numbered lists." }]
-    history.each do |message|
-      if message['speaker'] == 'user'
-        messages.push({ role: 'user', content: message['utterance'] })
-      else
-        messages.push({ role: 'assistant', content: message['utterance'] })
-      end
-    end
-    response = client.chat(parameters: {
-                             model: 'gpt-4o',
-                             messages:,
-                             temperature: 0.7
-                           })
+    response = client.get_response(history)
     add_assistant_utterance(response.dig('choices', 0, 'message', 'content'))
     save!
   end

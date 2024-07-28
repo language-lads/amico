@@ -65,4 +65,5 @@ Rails.application.configure do
   config.action_controller.raise_on_missing_callback_actions = true
 
   config.mock_rev_ai_client = true
+  config.mock_open_ai_client = true
 end
