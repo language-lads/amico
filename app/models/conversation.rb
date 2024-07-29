@@ -19,8 +19,10 @@ class Conversation < ApplicationRecord
   end
 
   after_update do
-    broadcast_replace_to self, partial: 'conversations/chat', target: "#{dom_id(self)}-chat"
-    broadcast_replace_to self, partial: 'conversations/status', target: "#{dom_id(self)}-status"
+    broadcast_replace_to self, partial: 'conversations/chat', target: "#{dom_id(self)}-chat" if saved_change_to_history?
+    if saved_change_to_status?
+      broadcast_replace_to self, partial: 'conversations/status', target: "#{dom_id(self)}-status"
+    end
   end
 
   def receive_transcription(data)
@@ -46,11 +48,16 @@ class Conversation < ApplicationRecord
   end
 
   def add_assistant_utterance(utterance)
-    if !history.empty? && history.last['speaker'] == 'assistant'
-      history.last['utterance'] += utterance
-    else
-      history.push({ speaker: 'assistant', utterance: })
-    end
+    history.push({ speaker: 'assistant', utterance: })
     save!
+    client = ElevenLabsClient.new(
+      Rails.application.credentials.dig(:elevenlabs, :api_key),
+      user.language_details[:code]
+    )
+    chunks = ''
+    client.text_to_speech(utterance) do |chunk|
+      chunks += chunk
+    end
+    ActionCable.server.broadcast("conversation_audio_stream_#{id}", Base64.encode64(chunks))
   end
 end

@@ -3,10 +3,12 @@
     <%= turbo_stream_from @conversation %>
     <div class="is-flex is-flex-direction-column is-justify-content-space-between">
       <%= content_tag :div, data: { 
-      controller: "conversation",
+      controller: "conversation audio-stream",
       'conversation-update-audio-path-value': update_audio_conversation_path(@conversation),
       'conversation-conversation-id-value': @conversation.id,
-      'conversation-status-value': @conversation.status } do %>
+      'audio-stream-conversation-id-value': @conversation.id,
+      'conversation-status-value': @conversation.status
+      } do %>
         <%= render partial: "chat", locals: { conversation: @conversation } %>
       <% end %>
     </div>

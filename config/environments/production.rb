@@ -110,6 +110,7 @@ Rails.application.configure do
     enable_starttls_auto: true
   }
 
-  config.mock_rev_ai_client = false
-  config.mock_open_ai_client = false
+  config.mock_speech_to_text_client = false
+  config.mock_language_model_client = false
+  config.mock_text_to_speech_client = false
 end

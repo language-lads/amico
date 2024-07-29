@@ -87,7 +87,7 @@ class RevAiClient
 end
 
 # This can be used in development mode to test the client without connecting to the Rev.ai API
-if Rails.configuration.mock_rev_ai_client
+if Rails.configuration.mock_speech_to_text_client
   class RevAiClient
     def initialize(_access_token, _language)
       Rails.logger.debug('Mock RevAI client initialized')
@@ -97,10 +97,13 @@ if Rails.configuration.mock_rev_ai_client
       @thread = Thread.new do
         EM.run do
           # Wait for 2 seconds before calling the on_connection_ready callback
-          EventMachine.add_timer(3) do
+          EventMachine.add_timer(1) do
             on_connection_ready.call
+            on_final_transcript.call({ 'type' => 'final',
+                                       'elements' => [{ 'type' => 'text', 'value' => 'hello ' }] })
+
             # Periodically call the on_final_transcript callback with a random transcript
-            EventMachine.add_periodic_timer(3) do
+            EventMachine.add_periodic_timer(10) do
               on_final_transcript.call({ 'type' => 'final',
                                          'elements' => [{ 'type' => 'text', 'value' => 'hello ' }] })
             end

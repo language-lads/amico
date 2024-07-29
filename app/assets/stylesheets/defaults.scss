@@ -25,14 +25,46 @@ html {
   /* Make the pulse effect a perfect circle */
   font-size: 2.5rem;
   margin-left: 1rem;
-  /* Loader 12 https://css-loaders.com/wavy/ */
+
+  /* Loader 12 https://css-loaders.com/pulsing/ */
   border-radius: 50%;
-  box-shadow: 0 0 0 0 #0004;
-  animation: l1 1s infinite;
+  box-shadow: 0 0 0 0 #535853;
+  animation: l1 1.5s infinite;
 
   @keyframes l1 {
     100% {
       box-shadow: 0 0 0 30px #0000;
     }
   }
+
+  //& {
+  //  aspect-ratio: 1;
+  //  border-radius: 50%;
+  //  background: #000;
+  //  box-shadow: 0 0 0 0 #014701;
+  //  animation: l2 1.5s infinite linear;
+  //  position: relative;
+  //}
+
+  //&:before,
+  //&:after {
+  //  content: "";
+  //  position: absolute;
+  //  inset: 0;
+  //  border-radius: inherit;
+  //  box-shadow: 0 0 0 0 #014701;
+  //  animation: inherit;
+  //  animation-delay: -0.5s;
+  //}
+
+  //&:after {
+  //  animation-delay: -1s;
+  //}
+
+  //@keyframes l2 {
+  //  100% {
+  //    box-shadow: 0 0 0 40px #0000
+  //  }
+  //}
+
 }

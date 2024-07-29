@@ -64,6 +64,7 @@ Rails.application.configure do
   # Raise error when a before_action's only/except options reference missing actions
   config.action_controller.raise_on_missing_callback_actions = true
 
-  config.mock_rev_ai_client = true
-  config.mock_open_ai_client = true
+  config.mock_speech_to_text_client = true
+  config.mock_language_model_client = true
+  config.mock_text_to_speech_client = true
 end

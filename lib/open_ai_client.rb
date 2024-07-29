@@ -39,7 +39,7 @@ class OpenAiClient
 end
 
 # This can be used in development mode to test the client without using the OpenAI API
-if Rails.configuration.mock_open_ai_client
+if Rails.configuration.mock_language_model_client
   class OpenAiClient
     def initialize(_api_key, _language, _log_errors)
       Rails.logger.debug('Mock OpenAI client initialized')

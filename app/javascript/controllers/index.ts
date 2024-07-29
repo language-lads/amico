@@ -7,6 +7,9 @@ import { application } from "./application";
 import AudioPlaybackController from "./audio_playback_controller";
 application.register("audio-playback", AudioPlaybackController);
 
+import AudioStreamController from "./audio_stream_controller";
+application.register("audio-stream", AudioStreamController);
+
 import ChatController from "./chat_controller";
 application.register("chat", ChatController);
 
