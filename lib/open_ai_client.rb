@@ -13,7 +13,7 @@ SYSTEM_PROMPT = "You are an educated <LANGUAGE/> person.
     "
 
 class OpenAiClient
-  def initialize(api_key, language, log_errors: false)
+  def initialize(api_key, language, log_errors)
     @client = OpenAI::Client.new(
       access_token: api_key,
       log_errors:
@@ -28,7 +28,7 @@ class OpenAiClient
     history.each do |message|
       messages.push({ role: message['speaker'], content: message['utterance'] })
     end
-    client.chat(parameters: { model: @model, messages:, temperature: @temperature })
+    @client.chat(parameters: { model: @model, messages:, temperature: @temperature })
   end
 
   private
