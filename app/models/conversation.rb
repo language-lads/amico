@@ -14,6 +14,11 @@ class Conversation < ApplicationRecord
     current_user.conversations.new(language: current_user.language)
   end
 
+  def broadcast_error(error_message)
+    update!(status: :error, error_message:)
+    ConversationChannel.broadcast_to self, 'STOP' # Stop the conversation on the client side
+  end
+
   def transcription_text
     transcription.sort_by { |t| t['ts'] }.map { |t| t['elements'].pluck('value').join }.join
   end

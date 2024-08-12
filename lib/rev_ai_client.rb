@@ -8,81 +8,121 @@ require 'wavefile'
 
 class RevAiClient
   include WaveFile
-  attr_reader :thread
+
+  attr_accessor :on_transcript, :on_connection_ready, :on_error
 
   def initialize(access_token, language)
     @access_token = access_token
-    @content_type = 'audio/x-raw'
-    @layout = 'interleaved'
-    @sample_rate = 16_000
-    # We have to use this format for other languages according to the API
-    # https://gstreamer.freedesktop.org/documentation/additional/design/mediatype-audio-raw.html?gi-language=c#formats
-    # https://docs.rev.ai/api/streaming/requests/#language
-    @format = 'S16LE'
     @language = language
-    @channels = 1
-    @url = "wss://api.rev.ai/speechtotext/v1/stream?access_token=#{@access_token}&content_type=#{@content_type};layout=#{@layout};rate=#{@sample_rate};format=#{@format};channels=#{@channels}&language=#{@language}"
-    @thread = nil
-    # Lock so we can safely access the websocket from multiple threads
-    @lock = Concurrent::ReadWriteLock.new
+    @lock = Concurrent::ReadWriteLock.new # So we can safely access the websocket from multiple threads
+    @ws = nil
   end
 
-  # Runs on a separate thread
-  def connect(on_final_transcript, on_connection_ready)
-    @thread = Thread.new do
-      EM.run do
-        @lock.with_write_lock do
-          @ws = Faye::WebSocket::Client.new(@url)
+  def connect
+    raise 'Websocket already connected' unless @ws.nil?
 
-          @ws.on :open do |_event|
-            on_connection_ready.call
-            Rails.logger.debug 'Connected'
-          end
+    start_event_machine
+  end
 
-          @ws.on :message do |event|
-            response = JSON.parse(event.data)
-            if response['type'] == 'final'
-              # Add a space after every '.' and '?' to make the transcript more readable
-              response['elements'].each do |element|
-                element['value'] = element['value'].gsub(/([.?!])/, '\1 ')
-              end
-              on_final_transcript.call(response)
-            end
-          end
-
-          @ws.on :close do |event|
-            Rails.logger.debug { "Disconnected with code: #{event.code}, reason: #{event.reason} " }
-            EventMachine.stop_event_loop
-          end
-
-          @ws.on :error do |event|
-            Rails.logger.debug { "Error: #{event.message}" }
-            EventMachine.stop_event_loop
-          end
-        end
-      end
-    end
+  # It's necessary to have the content type in a certain format for Rev.ai to accept
+  # https://gstreamer.freedesktop.org/documentation/additional/design/mediatype-audio-raw.html?gi-language=c#formats
+  # https://docs.rev.ai/api/streaming/requests/#language
+  def url
+    'wss://api.rev.ai/speechtotext/v1/stream?' \
+      "access_token=#{@access_token}&" \
+      "language=#{@language}&" \
+      'content_type=audio/x-raw;' \
+      'layout=interleaved;' \
+      'rate=16000;' \
+      'format=S16LE;' \
+      'channels=1'
   end
 
   def send(data)
+    raise 'Unable to send, websocket not connected' if @ws.nil?
+
     @lock.with_write_lock { @ws.send(data) }
   end
 
   def disconnect
-    @lock.with_write_lock { @ws.close }
+    return if @ws.nil?
+
+    @lock.with_write_lock do
+      @ws.close
+      @ws = nil
+    end
+
+    return if @thread.nil?
+
     @thread.join
+    @thread = nil
   end
 
+  # Convert a float32 array to PCM16 samples
   def self.convert_float32_to_pcm16(float32_array)
     float_format = WaveFile::Format.new(:mono, :float, 16_000)
-    pcm_format = WaveFile::Format.new(:mono, :pcm_16, 16_000)
+    pcm_format = WaveFile::Format.new(:mono, :pcm_16, 16_000) # rubocop:disable Naming/VariableNumber
     WaveFile::Buffer.new(float32_array, float_format).convert(pcm_format).samples
   end
 
   private
 
-  def ws=(websocket)
-    @lock.with_write_lock { @ws = websocket }
+  def start_event_machine
+    @thread = Thread.new do
+      EM.run do
+        @lock.with_write_lock do
+          setup_websocket
+        end
+        EventMachine.add_shutdown_hook { on_event_machine_shutdown }
+      end
+    end
+  end
+
+  def setup_websocket
+    @ws = Faye::WebSocket::Client.new(url)
+    @ws.on :open do |event|
+      on_websocket_open(event)
+    end
+    @ws.on :message do |event|
+      on_websocket_message(event)
+    end
+    @ws.on :close do |event|
+      on_websocket_close(event)
+    end
+  end
+
+  def on_event_machine_shutdown
+    Rails.logger.debug { 'Closing event machine loop' }
+    @lock.with_write_lock do
+      @ws&.close
+      @ws = nil
+    end
+  end
+
+  def on_websocket_open(event)
+    Rails.logger.debug { "Connected with code: #{event}" }
+    @on_connection_ready&.call
+  end
+
+  def on_websocket_message(event)
+    Rails.logger.debug { "Received message: #{event.data}" }
+    response = JSON.parse(event.data)
+    return unless response['type'] == 'final'
+
+    # Add a space after every '.' and '?' to make the transcript more readable
+    response['elements'].each do |element|
+      element['value'] = element['value'].gsub(/([.?!])/, '\1 ')
+    end
+
+    @on_transcript&.call(response)
+  end
+
+  def on_websocket_close(event)
+    Rails.logger.debug { "Disconnected with code: #{event.code}, reason: #{event.reason}" }
+    EventMachine.stop_event_loop
+    return unless event.code != 1_000 && event.code != 1_001 # These are normal close codes
+
+    @on_error&.call(event.reason)
   end
 end
 
@@ -93,19 +133,19 @@ if Rails.configuration.mock_speech_to_text_client
       Rails.logger.debug('Mock RevAI client initialized')
     end
 
-    def connect(on_final_transcript, on_connection_ready)
+    def connect(on_transcript, on_connection_ready, _on_disconnection) # rubocop:disable Metrics/MethodLength
       @thread = Thread.new do
         EM.run do
           # Wait for 2 seconds before calling the on_connection_ready callback
           EventMachine.add_timer(1) do
-            on_connection_ready.call
-            on_final_transcript.call({ 'type' => 'final',
-                                       'elements' => [{ 'type' => 'text', 'value' => 'hello ' }] })
+            on_connection_ready&.call
+            on_transcript&.call({ 'type' => 'final',
+                                  'elements' => [{ 'type' => 'text', 'value' => 'hello ' }] })
 
-            # Periodically call the on_final_transcript callback with a random transcript
+            # Periodically call the on_transcript callback with a random transcript
             EventMachine.add_periodic_timer(10) do
-              on_final_transcript.call({ 'type' => 'final',
-                                         'elements' => [{ 'type' => 'text', 'value' => 'hello ' }] })
+              on_transcript&.call({ 'type' => 'final',
+                                    'elements' => [{ 'type' => 'text', 'value' => 'hello ' }] })
             end
           end
         end
@@ -113,7 +153,6 @@ if Rails.configuration.mock_speech_to_text_client
     end
 
     def disconnect
-      # This probably doesn't work for multiple threads
       EventMachine.stop_event_loop
       @thread.join
     end

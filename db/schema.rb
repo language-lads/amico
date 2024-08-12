@@ -51,6 +51,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_20_041537) do
     t.jsonb "transcription", default: []
     t.bigint "user_id", null: false
     t.string "language", null: false
+    t.string "error_message"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.enum "status", default: "initialising", null: false, enum_type: "conversation_status"

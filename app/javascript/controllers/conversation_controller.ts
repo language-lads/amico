@@ -63,6 +63,9 @@ export default class extends Controller {
         received(data: any) {
           // Called when there's incoming data on the websocket for this channel
           console.log("received", data);
+          if (data == "STOP") {
+            classThis.disconnect();
+          }
         },
       },
     );

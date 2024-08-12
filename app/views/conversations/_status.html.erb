@@ -16,14 +16,16 @@
       >
         <i class="fa-solid fa-microphone"></i>
       </div>
-    <% elsif conversation.completed? %>
-    <% else %>
-      Some sort of error :(
+    <% elsif conversation.error? %>
+      <div class="notification is-danger is-light p-3">
+        There was an issue :( please go back and try starting the conversation
+        again.
+      </div>
     <% end %>
   </div>
   <%= button_to home_index_path, class: "button is-danger px-6", method: :get do %>
     <span class="icon">
-      <% if conversation.completed? %>
+      <% if conversation.completed? || conversation.error? %>
         <i class="fa-solid fa-arrow-left"></i>
       <% else %>
         <i class="fa-solid fa-square"></i>

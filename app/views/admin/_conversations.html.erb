@@ -19,7 +19,10 @@
           <%= link_to conversation.id, conversation %>
         </td>
         <td><%= conversation.user.email %></td>
-        <td><%= conversation.status %></td>
+        <td>
+          <%= conversation.status %>
+          <%= conversation.status == "error" ? conversation.error_message : "" %>
+        </td>
         <td class="is-vcentered">
           <% if conversation.audio.attached? %>
             <div data-controller="audio-playback" class="is-flex is-align-items-center">

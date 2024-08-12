@@ -7,6 +7,7 @@ class CreateConversations < ActiveRecord::Migration[7.1]
       t.jsonb :transcription, default: []
       t.references :user, null: false, foreign_key: true
       t.string :language, null: false
+      t.string :error_message
 
       t.timestamps
     end
