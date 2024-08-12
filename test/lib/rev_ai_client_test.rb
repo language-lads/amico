@@ -25,7 +25,7 @@ class RevAiClientTest < ActiveSupport::TestCase
     client.on_error = on_error
     client.connect
 
-    sleep 3
+    sleep 5
     assert on_connection_ready_called
     assert_not on_transcript_called
     assert_not on_error_called
@@ -35,7 +35,7 @@ class RevAiClientTest < ActiveSupport::TestCase
 
     # Terminate gracefully
     client.disconnect
-    sleep 3
+    sleep 5
     assert_not on_error_called
     assert_raises(RuntimeError, 'Unable to send, websocket not connected') do
       client.send('something')
@@ -51,7 +51,7 @@ class RevAiClientTest < ActiveSupport::TestCase
     client.on_error = on_error
     client.connect
 
-    sleep 3
+    sleep 5
     assert on_error_called
     assert_raises(RuntimeError, 'Unable to send, websocket not connected') do
       client.send('something')

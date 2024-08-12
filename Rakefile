@@ -31,11 +31,11 @@ task check_format: %i[environment format] do
   sh 'git diff --exit-code'
 end
 
-task test: %i[environment] do
+task testall: %i[environment] do
   sh 'bundle exec rails test'
 end
 
-task precommit: %i[environment format lint test]
+task precommit: %i[environment format lint testall]
 
 task cleanup: :environment do
   # Remove all empty directories in /storage
