@@ -30,7 +30,7 @@ class Conversation < ApplicationRecord
     end
   end
 
-  def receive_transcription(data)
+  def receive_transcription(data) # rubocop:disable Metrics/AbcSize
     transcription.push(data)
     add_user_utterance(data['elements'].pluck('value').join)
     client = OpenAiClient.new(
@@ -52,7 +52,7 @@ class Conversation < ApplicationRecord
     save!
   end
 
-  def add_assistant_utterance(utterance)
+  def add_assistant_utterance(utterance) # rubocop:disable Metrics/MethodLength
     history.push({ speaker: 'assistant', utterance: })
     save!
     client = ElevenLabsClient.new(
