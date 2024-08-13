@@ -16,26 +16,13 @@ class RevAiClient
     @language = language
     @lock = Concurrent::ReadWriteLock.new # So we can safely access the websocket from multiple threads
     @ws = nil
+    @thread = nil
   end
 
   def connect
     raise 'Websocket already connected' unless @ws.nil?
 
     start_event_machine
-  end
-
-  # It's necessary to have the content type in a certain format for Rev.ai to accept
-  # https://gstreamer.freedesktop.org/documentation/additional/design/mediatype-audio-raw.html?gi-language=c#formats
-  # https://docs.rev.ai/api/streaming/requests/#language
-  def url
-    'wss://api.rev.ai/speechtotext/v1/stream?' \
-      "access_token=#{@access_token}&" \
-      "language=#{@language}&" \
-      'content_type=audio/x-raw;' \
-      'layout=interleaved;' \
-      'rate=16000;' \
-      'format=S16LE;' \
-      'channels=1'
   end
 
   def send(data)
@@ -66,6 +53,20 @@ class RevAiClient
   end
 
   private
+
+  # It's necessary to have the content type in a certain format for Rev.ai to accept
+  # https://gstreamer.freedesktop.org/documentation/additional/design/mediatype-audio-raw.html?gi-language=c#formats
+  # https://docs.rev.ai/api/streaming/requests/#language
+  def url
+    'wss://api.rev.ai/speechtotext/v1/stream?' \
+      "access_token=#{@access_token}&" \
+      "language=#{@language}&" \
+      'content_type=audio/x-raw;' \
+      'layout=interleaved;' \
+      'rate=16000;' \
+      'format=S16LE;' \
+      'channels=1'
+  end
 
   def start_event_machine
     @thread = Thread.new do
@@ -129,25 +130,22 @@ end
 # This can be used in development mode to test the client without connecting to the Rev.ai API
 if Rails.configuration.mock_speech_to_text_client
   class RevAiClient
+    MESSAGE = { 'type' => 'final',
+                'elements' => [{ 'type' => 'text', 'value' => 'I am a mocked transcription.' }] }.freeze
+    FREQUENCY = 10 # seconds
+
     def initialize(_access_token, _language)
       Rails.logger.debug('Mock RevAI client initialized')
     end
 
-    def connect(on_transcript, on_connection_ready, _on_disconnection) # rubocop:disable Metrics/MethodLength
+    def connect
       @thread = Thread.new do
         EM.run do
-          # Wait for 2 seconds before calling the on_connection_ready callback
           EventMachine.add_timer(1) do
-            on_connection_ready&.call
-            on_transcript&.call({ 'type' => 'final',
-                                  'elements' => [{ 'type' => 'text', 'value' => 'hello ' }] })
-
-            # Periodically call the on_transcript callback with a random transcript
-            EventMachine.add_periodic_timer(10) do
-              on_transcript&.call({ 'type' => 'final',
-                                    'elements' => [{ 'type' => 'text', 'value' => 'hello ' }] })
-            end
+            @on_connection_ready&.call
+            @on_transcript&.call(MESSAGE)
           end
+          EventMachine.add_periodic_timer(FREQUENCY) { @on_transcript&.call(MESSAGE) }
         end
       end
     end
@@ -155,6 +153,7 @@ if Rails.configuration.mock_speech_to_text_client
     def disconnect
       EventMachine.stop_event_loop
       @thread.join
+      @thread = nil
     end
 
     def send(data) end

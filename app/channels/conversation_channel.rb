@@ -7,9 +7,7 @@ class ConversationChannel < ApplicationCable::Channel
   include WaveFile
 
   def subscribed # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
-    # @stream_id = "conversation_#{params['id']}"
     @conversation = Conversation.find(params['id'])
-    # stream_from @stream_id
     stream_for @conversation
     @transcription_client = RevAiClient.new(Rails.application.credentials.dig(:rev_ai, :access_token),
                                             @conversation.language)
@@ -34,7 +32,7 @@ class ConversationChannel < ApplicationCable::Channel
     @conversation.broadcast_error("Transcription Service: #{reason}")
   end
 
-  def unsubscribed # rubocop:disable Metrics/MethodLength
+  def unsubscribed # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     return if @conversation.error?
 
     @transcription_client&.disconnect
@@ -43,7 +41,8 @@ class ConversationChannel < ApplicationCable::Channel
       samples = @audio_samples.pluck('audio_samples').flatten(1)
       format = Format.new(:mono, :float, 16_000)
       Writer.new(f, format).write(Buffer.new(samples, format))
-      @conversation.audio.attach(io: File.open(f.path), filename: @filename, content_type: @content_type)
+      @conversation.audio.attach(io: File.open(f.path), filename: @conversation.audio_recording_file_name,
+                                 content_type: 'audio/wav')
     end
     @conversation.update!(status: :completed)
     clear_audio_samples

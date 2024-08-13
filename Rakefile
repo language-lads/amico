@@ -31,8 +31,13 @@ task check_format: %i[environment format] do
   sh 'git diff --exit-code'
 end
 
-task testall: %i[environment] do
+task test_all: %i[environment] do
   sh 'bundle exec rails test'
+  # sh 'bundle exec rails test:all'
+end
+
+task test_expensive: %i[environment] do
+  sh 'EXPENSIVE_TESTS=true bundle exec rails test'
 end
 
 task precommit: %i[environment format lint testall]

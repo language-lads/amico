@@ -2,6 +2,7 @@
 
 class Conversation < ApplicationRecord
   include ActionView::RecordIdentifier # for the dom_id function
+  include Respondable
 
   belongs_to :user
   has_one_attached :audio
@@ -23,6 +24,10 @@ class Conversation < ApplicationRecord
     transcription.sort_by { |t| t['ts'] }.map { |t| t['elements'].pluck('value').join }.join
   end
 
+  def audio_recording_file_name
+    "conversation_recording_#{id}.wav"
+  end
+
   after_update do
     broadcast_replace_to self, partial: 'conversations/chat', target: "#{dom_id(self)}-chat" if saved_change_to_history?
     if saved_change_to_status?
@@ -30,13 +35,14 @@ class Conversation < ApplicationRecord
     end
   end
 
-  def receive_transcription(data) # rubocop:disable Metrics/AbcSize
+  def receive_transcription(data) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     transcription.push(data)
     add_user_utterance(data['elements'].pluck('value').join)
+    return unless should_respond?(history, user.language_english_name)
+
     client = OpenAiClient.new(
       Rails.application.credentials.openai[:api_key],
-      user.language_details[:english_name],
-      true
+      user.language_details[:english_name]
     )
     response = client.get_response(history)
     add_assistant_utterance(response.dig('choices', 0, 'message', 'content'))
@@ -52,17 +58,17 @@ class Conversation < ApplicationRecord
     save!
   end
 
-  def add_assistant_utterance(utterance) # rubocop:disable Metrics/MethodLength
+  def add_assistant_utterance(utterance)
     history.push({ speaker: 'assistant', utterance: })
     save!
-    client = ElevenLabsClient.new(
-      Rails.application.credentials.dig(:elevenlabs, :api_key),
-      user.language_details[:code]
-    )
-    chunks = ''
-    client.text_to_speech(utterance) do |chunk|
-      chunks += chunk
-    end
-    ActionCable.server.broadcast("conversation_audio_stream_#{id}", Base64.encode64(chunks))
+    # client = ElevenLabsClient.new(
+    #  Rails.application.credentials.dig(:elevenlabs, :api_key),
+    #  user.language_details[:code]
+    # )
+    # chunks = ''
+    # client.text_to_speech(utterance) do |chunk|
+    #  chunks += chunk
+    # end
+    # ActionCable.server.broadcast("conversation_audio_stream_#{id}", Base64.encode64(chunks))
   end
 end

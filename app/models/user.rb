@@ -47,4 +47,8 @@ class User < ApplicationRecord
   def language_details
     LANGUAGE_DETAILS.find { |l| l[:code] == language }
   end
+
+  def language_english_name
+    language_details[:english_name]
+  end
 end

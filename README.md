@@ -14,3 +14,4 @@ GOOD_JOB_EXECUTION_MODE=async rails server
 
 An admin user is created automatically when the database is seeded, with
 username `admin@languagelads.com` and password `QTVE9s%Y!!tBfa`.
+
