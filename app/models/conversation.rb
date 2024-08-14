@@ -38,6 +38,13 @@ class Conversation < ApplicationRecord
   end
 
   def receive_transcription(data) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+    if data['type'] == 'partial'
+      # Tell our client to stop speaking
+      ActionCable.server.broadcast("conversation_audio_stream_#{id}", 'INTERRUPT')
+      return
+    end
+    return if data['type'] != 'final'
+
     transcription.push(data)
     add_user_utterance(data['elements'].pluck('value').join)
 

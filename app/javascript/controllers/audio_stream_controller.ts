@@ -9,7 +9,7 @@ export default class extends Controller {
 
   declare conversationIdValue: number;
   declare channel: any;
-  declare audio: HTMLAudioElement;
+  declare audio: HTMLAudioElement | undefined;
 
   connect() {
     console.log(`Hello audio stream ${this.conversationIdValue}`);
@@ -25,12 +25,14 @@ export default class extends Controller {
 
         disconnected() {
           console.log("Disconnected from the audio stream channel");
-          classThis.audio.pause();
+          if (classThis.audio) classThis.audio.pause();
         },
 
         received(data: string) {
-          if (classThis.audio) {
-            classThis.audio.pause();
+          if (classThis.audio) classThis.audio.pause();
+          if (data === "INTERRUPT") {
+            classThis.audio = undefined;
+            return;
           }
           classThis.audio = new Audio("data:audio/mp3;base64," + data);
           classThis.audio.play();

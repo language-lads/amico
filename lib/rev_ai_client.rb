@@ -108,11 +108,12 @@ class RevAiClient
   def on_websocket_message(event)
     Rails.logger.debug { "Received message: #{event.data}" }
     response = JSON.parse(event.data)
-    return unless response['type'] == 'final'
 
     # Add a space after every '.' and '?' to make the transcript more readable
-    response['elements'].each do |element|
-      element['value'] = element['value'].gsub(/([.?!])/, '\1 ')
+    if response['type'] == 'final'
+      response['elements'].each do |element|
+        element['value'] = element['value'].gsub(/([.?!])/, '\1 ')
+      end
     end
 
     @on_transcript&.call(response)
