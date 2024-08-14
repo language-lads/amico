@@ -81,7 +81,7 @@ Rails.application.configure do
   config.action_mailer.perform_deliveries = true
 
   # Mock out the Rev AI client in development
-  config.mock_speech_to_text_client = true
-  config.mock_language_model_client = true
-  config.mock_text_to_speech_client = true
+  config.mock_speech_to_text_client = false
+  config.mock_language_model_client = false
+  config.mock_text_to_speech_client = false
 end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Logic for determining whether we should respond to a user message
-module Respondable
+module Waitable
   MODEL = 'gpt-4o'
   TEMPERATURE = 0.5
   TOP_P = 0.5
@@ -64,7 +64,7 @@ module Respondable
     response = openai_client.chat(parameters: { model: MODEL, messages:, temperature: TEMPERATURE, top_p: TOP_P,
                                                 response_format: { type: 'json_object' } })
     parsed_response = JSON.parse(response.dig('choices', 0, 'message', 'content'))
-    Rails.logger.debug { "Respondable: #{parsed_response}" }
+    Rails.logger.debug { "Waitable: #{parsed_response}" }
     parsed_response['should_respond']
   end
 

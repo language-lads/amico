@@ -2,7 +2,8 @@
 
 class Conversation < ApplicationRecord
   include ActionView::RecordIdentifier # for the dom_id function
-  include Respondable
+  include Waitable
+  include Speakable
 
   belongs_to :user
   has_one_attached :audio
@@ -35,7 +36,7 @@ class Conversation < ApplicationRecord
     end
   end
 
-  def receive_transcription(data) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def receive_transcription(data) # rubocop:disable Metrics/AbcSize
     transcription.push(data)
     add_user_utterance(data['elements'].pluck('value').join)
     return unless should_respond?(history, user.language_english_name)
@@ -59,16 +60,12 @@ class Conversation < ApplicationRecord
   end
 
   def add_assistant_utterance(utterance)
+    audio_chunks = ''
+    to_speech(utterance, user.language_details[:code]) do |chunk|
+      audio_chunks += chunk
+    end
+    ActionCable.server.broadcast("conversation_audio_stream_#{id}", Base64.encode64(audio_chunks))
     history.push({ speaker: 'assistant', utterance: })
     save!
-    # client = ElevenLabsClient.new(
-    #  Rails.application.credentials.dig(:elevenlabs, :api_key),
-    #  user.language_details[:code]
-    # )
-    # chunks = ''
-    # client.text_to_speech(utterance) do |chunk|
-    #  chunks += chunk
-    # end
-    # ActionCable.server.broadcast("conversation_audio_stream_#{id}", Base64.encode64(chunks))
   end
 end
