@@ -4,6 +4,7 @@ class Conversation < ApplicationRecord
   include ActionView::RecordIdentifier # for the dom_id function
   include Waitable
   include Speakable
+  include Respondable
 
   belongs_to :user
   has_one_attached :audio
@@ -36,17 +37,24 @@ class Conversation < ApplicationRecord
     end
   end
 
-  def receive_transcription(data) # rubocop:disable Metrics/AbcSize
+  def receive_transcription(data) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     transcription.push(data)
     add_user_utterance(data['elements'].pluck('value').join)
-    return unless should_respond?(history, user.language_english_name)
 
-    client = OpenAiClient.new(
-      Rails.application.credentials.openai[:api_key],
-      user.language_details[:english_name]
-    )
-    response = client.get_response(history)
-    add_assistant_utterance(response.dig('choices', 0, 'message', 'content'))
+    # Run the should_respond? and get_response methods on a Concurrent::Promises.future
+    # so we can reduce latencies by running them concurrently
+    should_respond = Concurrent::Promises.future do
+      should_respond?(history, user.language_english_name)
+    end
+    response = Concurrent::Promises.future do
+      get_response(history, user.language_english_name)
+    end
+
+    # Zip the two futures together to wait for both to complete
+    should_respond, response = Concurrent::Promises.zip(should_respond, response).value!
+    return unless should_respond
+
+    add_assistant_utterance(response)
     save!
   end
 
