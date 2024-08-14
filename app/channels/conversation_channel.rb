@@ -9,6 +9,7 @@ class ConversationChannel < ApplicationCable::Channel
   def subscribed # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     @conversation = Conversation.find(params['id'])
     stream_for @conversation
+    sleep 1 # Simulate a slow connection
     @transcription_client = RevAiClient.new(Rails.application.credentials.dig(:rev_ai, :access_token),
                                             @conversation.language)
 
