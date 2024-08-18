@@ -8,6 +8,19 @@ on:
 jobs:
   run_tests:
     runs-on: 'ubuntu-22.04'
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
     environment: 'test'
     env:
       RAILS_ENV: 'test'
@@ -25,6 +38,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: '.node-version'
+
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get -yqq install libpq-dev
 
       - name: 'Run tests'
         run: 'bundle exec rake ci'
