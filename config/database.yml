@@ -18,11 +18,13 @@ default: &default
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  host: <%= ENV.fetch("PG_HOST") { 'localhost' } %>
+  username: <%= ENV.fetch("PG_USER") { 'postgres' } %>
+  password: <%= ENV.fetch("PG_PASSWORD") { 'postgres' } %>
 
 development:
   <<: *default
   database: amico_development
-  host: localhost
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.
@@ -57,7 +59,6 @@ development:
 test:
   <<: *default
   database: amico_test
-  host: localhost
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
