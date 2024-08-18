@@ -10,11 +10,11 @@ Rails.application.load_tasks
 task install: :environment do
   sh 'bundle install'
   sh 'yarn install'
+  sh 'bundle exec rails db:prepare'
+  sh 'bundle exec rails db:migrate'
 end
 
-task dev: %i[environment install clean] do
-  sh 'bundle exec rails db:create'
-  sh 'bundle exec rails db:migrate'
+task dev: %i[environment clean install] do
   sh 'bundle exec bin/dev'
 end
 
@@ -31,12 +31,12 @@ task format: :environment do
   sh 'find app -name "*.html.erb" -exec bundle exec erb-formatter --write {} \;'
 end
 
-task check_diff: %i[environment format] do
+task check_diff: :environment do
   sh 'git diff --exit-code'
 end
 
 Rake::Task['test'].clear # Override the default test task
-task test: %i[environment] do
+task test: :environment do
   sh 'bundle exec rails test:all' # Run all rails unit and system tests
 end
 
