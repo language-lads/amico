@@ -23,10 +23,11 @@
 		"build:css": "sass ./app/assets/stylesheets/application.bulma.scss:./app/assets/builds/application.css --no-source-map --load-path=node_modules"
 	},
 	"engines": {
-		"node": "20.11.1",
+		"node": "20.16.0",
 		"yarn": "1.22.21"
 	},
 	"devDependencies": {
 		"cpx": "^1.5.0"
-	}
+	},
+	"packageManager": "yarn@1.22.21+sha1.1959a18351b811cdeedbd484a8f86c3cc3bbaf72"
 }
