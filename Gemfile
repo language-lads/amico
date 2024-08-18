@@ -114,3 +114,8 @@ group :test do
   gem 'capybara'
   gem 'selenium-webdriver'
 end
+
+# Typing and static analysis
+gem 'sorbet', group: :development
+gem 'sorbet-runtime'
+gem 'tapioca', require: false, group: %i[development test]

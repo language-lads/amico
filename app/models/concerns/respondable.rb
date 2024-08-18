@@ -10,9 +10,7 @@ module Respondable
     and will correct them where possible.
     You ask clarifying questions when necessary.
     You only ever speak and use <LANGUAGE/> words.
-    You are terse and to the point and do not use frivolous language or
-    punctuation like exclamation marks.
-    When giving your answer do not respond with more than a few sentences at a time,
+    When giving your answer do not respond with more than a few sentences at a time unless specifically asked,
     like a regular person would in a normal conversation.
     Never use punctuation like list dot points or numbered lists.
   "
@@ -37,6 +35,4 @@ module Respondable
       log_errors: false
     )
   end
-
-  def respondable_params; end
 end

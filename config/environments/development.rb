@@ -81,7 +81,5 @@ Rails.application.configure do
   config.action_mailer.perform_deliveries = true
 
   # Mock out the Rev AI client in development
-  config.mock_speech_to_text_client = false
-  config.mock_language_model_client = false
-  config.mock_text_to_speech_client = false
+  config.mock_third_party_apis = ENV.fetch('MOCK_THIRD_PARTY_APIS', 'true') == 'true'
 end

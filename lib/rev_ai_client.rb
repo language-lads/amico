@@ -128,35 +128,35 @@ class RevAiClient
   end
 end
 
-# This can be used in development mode to test the client without connecting to the Rev.ai API
-if Rails.configuration.mock_speech_to_text_client
-  class RevAiClient
-    MESSAGE = { 'type' => 'final',
-                'elements' => [{ 'type' => 'text', 'value' => 'I am a mocked transcription.' }] }.freeze
-    FREQUENCY = 10 # seconds
+## This can be used in development mode to test the client without connecting to the Rev.ai API
+# if Rails.configuration.mock_speech_to_text_client
+#  class RevAiClient
+#    MESSAGE = { 'type' => 'final',
+#                'elements' => [{ 'type' => 'text', 'value' => 'I am a mocked transcription.' }] }.freeze
+#    FREQUENCY = 10 # seconds
 
-    def initialize(_access_token, _language)
-      Rails.logger.debug('Mock RevAI client initialized')
-    end
+#    def initialize(_access_token, _language)
+#      Rails.logger.debug('Mock RevAI client initialized')
+#    end
 
-    def connect
-      @thread = Thread.new do
-        EM.run do
-          EventMachine.add_timer(1) do
-            @on_connection_ready&.call
-            @on_transcript&.call(MESSAGE)
-          end
-          EventMachine.add_periodic_timer(FREQUENCY) { @on_transcript&.call(MESSAGE) }
-        end
-      end
-    end
+#    def connect
+#      @thread = Thread.new do
+#        EM.run do
+#          EventMachine.add_timer(1) do
+#            @on_connection_ready&.call
+#            @on_transcript&.call(MESSAGE)
+#          end
+#          EventMachine.add_periodic_timer(FREQUENCY) { @on_transcript&.call(MESSAGE) }
+#        end
+#      end
+#    end
 
-    def disconnect
-      EventMachine.stop_event_loop
-      @thread.join
-      @thread = nil
-    end
+#    def disconnect
+#      EventMachine.stop_event_loop
+#      @thread.join
+#      @thread = nil
+#    end
 
-    def send(data) end
-  end
-end
+#    def send(data) end
+#  end
+# end
