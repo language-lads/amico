@@ -1,0 +1,24 @@
+# See here for list of installed packages under 'ubuntu-22.04'
+# https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2204-Readme.md
+
+name: 'continuous integration'
+on:
+  push:
+    branches: ['dev']
+jobs:
+  run_tests:
+    runs-on: 'ubuntu-22.04'
+    environment: 'test'
+    env:
+      RAILS_ENV: 'test'
+      RAILS_MASTER_KEY: ${{ secrets.RAILS_CREDENTIALS_TEST_KEY }}
+    steps:
+      - name: 'Checkout code'
+        uses: 'actions/checkout@v4'
+
+      - name: 'Install Ruby and gems'
+        uses: 'ruby/setup-ruby@v1'
+        with:
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+
+      - run: 'rake ci'

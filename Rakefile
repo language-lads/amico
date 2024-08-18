@@ -10,16 +10,16 @@ Rails.application.load_tasks
 task install: :environment do
   sh 'bundle install'
   sh 'yarn install'
-  sh 'bundle exec rails db:create'
 end
 
-task dev: %i[environment install cleanup] do
+task dev: %i[environment install clean] do
+  sh 'bundle exec rails db:create'
   sh 'bundle exec rails db:migrate'
   sh 'bundle exec bin/dev'
 end
 
 task lint: :environment do
-  sh 'bin/tapioca dsl --verify' # Check if our RBI files are up to date
+  sh 'bundle exec tapioca dsl' # Make sure RBI files are up to date
   sh 'bundle exec srb typecheck' # Type check with Sorbet
   sh 'bundle exec rubocop' # Run with --autocorrect-all to fix offenses
   sh 'yarn tsc'
@@ -31,7 +31,7 @@ task format: :environment do
   sh 'find app -name "*.html.erb" -exec bundle exec erb-formatter --write {} \;'
 end
 
-task check_format: %i[environment format] do
+task check_diff: %i[environment format] do
   sh 'git diff --exit-code'
 end
 
@@ -47,13 +47,5 @@ task clean: :environment do
   end
 end
 
-if Rails.env.development?
-  namespace :db do
-    task migrate: :environment do # Appends to the existing `db:migrate` task
-      # Make sure to update our RBI files after running migrations
-      sh 'bundle exec tapioca dsl'
-    end
-  end
-end
-
-task precommit: %i[environment format lint test clean]
+task ci: %i[install format lint test check_diff]
+task precommit: %i[format lint test clean]
