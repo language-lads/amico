@@ -7,47 +7,4 @@ on:
     branches: ['dev']
 jobs:
   run_tests:
-    runs-on: 'ubuntu-22.04'
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-    environment: 'test'
-    env:
-      RAILS_ENV: 'test'
-      RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
-    steps:
-      - name: 'Checkout code'
-        uses: 'actions/checkout@v4'
-
-      - name: 'Install Ruby and gems'
-        uses: 'ruby/setup-ruby@v1'
-        with:
-          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-
-      - name: 'Setup node and yarn'
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.node-version'
-
-      - name: Install PostgreSQL client
-        run: |
-          sudo apt-get -yqq install libpq-dev
-
-      # For some reason, tapioca needs the dev database created
-      - name: 'Setup dev database'
-        env:
-          RAILS_ENV: 'development'
-        run: 'bundle exec rake install'
-
-      - name: 'Run tests'
-        run: 'bundle exec rake ci'
+    uses: ./.github/workflows/run_tests.yml
