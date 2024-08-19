@@ -1,5 +1,8 @@
 name: Reusable workflow that runs all our tests
 
+on:
+  workflow_call:
+
 jobs:
   run_tests:
     runs-on: 'ubuntu-22.04'
