@@ -6,11 +6,11 @@ on:
   push:
     branches: ["main"]
 jobs:
-  #run_tests:
-  #  uses: ./.github/workflows/run_tests.yml
-  #  secrets: inherit
+  run_tests:
+    uses: ./.github/workflows/run_tests.yml
+    secrets: inherit
   deploy_to_heroku:
-    #needs: run_tests
+    needs: run_tests
     runs-on: "ubuntu-22.04"
     steps:
       - name: "Checkout code"
