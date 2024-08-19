@@ -1,10 +1,10 @@
 # See here for list of installed packages under 'ubuntu-22.04'
 # https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2204-Readme.md
 
-name: 'Continuous Integration'
+name: "Continuous Integration"
 on:
   push:
-    branches: ['dev']
+    branches: ["dev"]
 jobs:
   run_tests:
     uses: ./.github/workflows/run_tests.yml

@@ -1,24 +1,24 @@
 # See here for list of installed packages under 'ubuntu-22.04'
 # https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2204-Readme.md
 
-name: 'Continuous Deployment'
+name: "Continuous Deployment"
 on:
   push:
-    branches: ['main']
+    branches: ["main"]
 jobs:
   run_tests:
     uses: ./.github/workflows/run_tests.yml
     secrets: inherit
   deploy_to_heroku:
     needs: run_tests
-    runs-on: 'ubuntu-22.04'
-    env:
-      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+    runs-on: "ubuntu-22.04"
     steps:
-      - name: 'Checkout code'
-        uses: 'actions/checkout@v4'
+      - name: "Checkout code"
+        uses: "actions/checkout@v4"
 
-      - name: 'Deploy to Heroku'
-        run: |
-          heroku git:remote -a amico
-          git push heroku main
+      - name: "Deploy to Heroku"
+        uses: akhileshns/heroku-deploy@v3.13.15 # This is the action
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: "amico"
+          heroku_email: "mail@tombarone.net"
