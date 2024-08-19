@@ -10,6 +10,7 @@ jobs:
     uses: ./.github/workflows/run_tests.yml
     secrets: inherit
   deploy_to_heroku:
+    needs: run_tests
     runs-on: 'ubuntu-22.04'
     env:
       HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
@@ -18,4 +19,6 @@ jobs:
         uses: 'actions/checkout@v4'
 
       - name: 'Deploy to Heroku'
-        run: 'git push heroku main'
+        run: |
+          heroku git:remote -a amico
+          git push heroku main

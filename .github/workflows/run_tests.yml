@@ -1,4 +1,4 @@
-name: Reusable workflow that runs all our tests
+name: Run Tests
 
 on:
   workflow_call:
