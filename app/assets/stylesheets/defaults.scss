@@ -6,6 +6,37 @@ html {
   overflow-y: auto !important;
 }
 
+// We want our app screen to take up the full height of the viewport
+html,
+body,
+#root {
+  height: 100%;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+
+  &>.navbar {
+    // Navbar is a fixed height at the top
+    flex: 0 0 auto;
+  }
+
+  &>#content {
+    // Content fills the rest of the screen
+    flex: 1 1 auto;
+  }
+}
+
+// Helper class to vertically center content we put in the #content class
+.centered-content {
+  display: flex;
+  //justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 3rem 1.5rem;
+}
+
 // Make the padding the same as the hero-body
 .hero-foot {
   padding: cv.getVar("hero-body-padding");
@@ -36,35 +67,5 @@ html {
       box-shadow: 0 0 0 30px #0000;
     }
   }
-
-  //& {
-  //  aspect-ratio: 1;
-  //  border-radius: 50%;
-  //  background: #000;
-  //  box-shadow: 0 0 0 0 #014701;
-  //  animation: l2 1.5s infinite linear;
-  //  position: relative;
-  //}
-
-  //&:before,
-  //&:after {
-  //  content: "";
-  //  position: absolute;
-  //  inset: 0;
-  //  border-radius: inherit;
-  //  box-shadow: 0 0 0 0 #014701;
-  //  animation: inherit;
-  //  animation-delay: -0.5s;
-  //}
-
-  //&:after {
-  //  animation-delay: -1s;
-  //}
-
-  //@keyframes l2 {
-  //  100% {
-  //    box-shadow: 0 0 0 40px #0000
-  //  }
-  //}
 
 }

@@ -17,49 +17,51 @@
   </head>
 
   <body>
-    <section class="hero is-fullheight">
-      <div class="hero-head">
-        <header class="navbar" data-controller="navbar">
-          <div class="container">
-            <div class="navbar-brand">
-              <div class="navbar-item">
-                <%= link_to "Amico", home_index_path, class: "title is-3" %>
-              </div>
-              <% if user_signed_in? %>
-                <span
-                  class="navbar-burger"
-                  data-navbar-target="burger"
-                  data-action="click->navbar#toggle"
-                >
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </span>
-              <% end %>
+    <div id="root">
+      <!-- Fixed height navbar -->
+      <header class="navbar" data-controller="navbar">
+        <div class="container">
+          <div class="navbar-brand">
+            <div class="navbar-item">
+              <%= link_to "Amico", home_index_path, class: "title is-3" %>
             </div>
-            <div data-navbar-target="menu" class="navbar-menu">
-              <% if user_signed_in? %>
-                <div class="navbar-end">
-                  <%= link_to t("home"), home_index_path, class: "navbar-item" %>
-                  <% if current_user.admin? %>
-                    <%= link_to t("admin"), admin_index_path, class: "navbar-item" %>
-                  <% end %>
-                  <div class="navbar-item">
-                    <%= button_to destroy_user_session_path, 
+            <% if user_signed_in? %>
+              <span
+                class="navbar-burger"
+                data-navbar-target="burger"
+                data-action="click->navbar#toggle"
+              >
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+              </span>
+            <% end %>
+          </div>
+          <div data-navbar-target="menu" class="navbar-menu">
+            <% if user_signed_in? %>
+              <div class="navbar-end">
+                <%= link_to t("home"), home_index_path, class: "navbar-item" %>
+                <% if current_user.admin? %>
+                  <%= link_to t("admin"), admin_index_path, class: "navbar-item" %>
+                <% end %>
+                <div class="navbar-item">
+                  <%= button_to destroy_user_session_path, 
                       method: :delete, 
                       class: "button is-link", 
                       data: { 'turbo-submits-with': '...'} do %>
-                      <strong><%= t("sign_out") %></strong>
-                    <% end %>
-                  </div>
+                    <strong><%= t("sign_out") %></strong>
+                  <% end %>
                 </div>
-              <% end %>
-            </div>
+              </div>
+            <% end %>
           </div>
-        </header>
+        </div>
+      </header>
+      <!-- Fit to height body -->
+      <div id="content">
+        <%= yield %>
       </div>
-      <%= yield %>
-    </section>
+    </div>
   </body>
 </html>
