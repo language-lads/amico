@@ -39,5 +39,6 @@ en:
   start: "Start"
   home: "Home"
   admin: "Admin"
+  settings: "Settings"
   sign_out: "Sign out"
   start_speaking: "Start speaking..."
