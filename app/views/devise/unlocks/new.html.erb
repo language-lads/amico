@@ -1,20 +1,16 @@
-<div class="hero-body">
-  <div class="container">
-    <h2>Resend unlock instructions</h2>
-
-    <%= form_for(resource, as: resource_name, url: unlock_path(resource_name), html: { method: :post }) do |f| %>
-      <%= render "devise/shared/error_messages", resource: resource %>
-
-      <div class="field">
-        <%= f.label :email %><br/>
-        <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-      </div>
-
-      <div class="actions">
-        <%= f.submit "Resend unlock instructions" %>
-      </div>
-    <% end %>
-
-    <%= render "devise/shared/links" %>
+<%= render "devise/shared/layout" do %>
+  <h3 class="title is-3 pb-3">Resend unlock instructions</h3>
+  <%= form_for(resource, as: resource_name, url: unlock_path(resource_name), html: { method: :post }) do |f| %>
+    <div class="field py-2">
+      <%= f.label :email %><br/>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "input" %>
+    </div>
+    <div class="actions py-2">
+      <%= f.submit "Resend unlock instructions", class: "button is-link is-fullwidth" %>
+    </div>
+    <%= render "devise/shared/error_messages", resource: resource %>
+  <% end %>
+  <div class="mt-5">
+    <%= link_to "Back", new_session_path(resource_name) %>
   </div>
-</div>
+<% end %>

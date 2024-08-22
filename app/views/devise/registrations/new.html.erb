@@ -1,8 +1,7 @@
 <%= render "devise/shared/layout" do %>
-  <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-    <%= render "devise/shared/error_messages", resource: resource %>
+  <h3 class="title is-3 pb-3">Create your account</h3>
 
-    <h3 class="title is-3 pb-3">Create your account</h3>
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
 
     <div class="field py-2">
       <%= f.label :email %><br/>
@@ -29,9 +28,11 @@
       <%= f.submit "Create account", class: "button is-success is-fullwidth" %>
     </div>
 
+    <%= render "devise/shared/error_messages", resource: resource %>
+
     <div class="subtitle is-6 pt-3 mt-5">
       Already have an account?
     </div>
-    <%= link_to "Log in", new_session_path(resource_name) %><br/>
+    <%= link_to "Log in", new_session_path(resource_name) %>
   <% end %>
 <% end %>

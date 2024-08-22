@@ -1,30 +1,28 @@
-<div class="hero-body">
-  <div class="container">
-    <h2>Resend confirmation instructions</h2>
-
-    <%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }) do |f| %>
-      <%= render "devise/shared/error_messages", resource: resource %>
-
-      <div class="field">
-        <%= f.label :email %><br/>
-        <%= f.email_field :email,
-                      autofocus: true,
-                      autocomplete: "email",
-                      value:
-                        (
-                          if resource.pending_reconfirmation?
-                            resource.unconfirmed_email
-                          else
-                            resource.email
-                          end
-                        ) %>
-      </div>
-
-      <div class="actions">
-        <%= f.submit "Resend confirmation instructions" %>
-      </div>
-    <% end %>
-
-    <%= render "devise/shared/links" %>
+<%= render "devise/shared/layout" do %>
+  <h3 class="title is-3 pb-3">Resend confirmation</h3>
+  <%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }) do |f| %>
+    <div class="field">
+      <%= f.label :email %><br/>
+      <%= f.email_field :email,
+                    autofocus: true,
+                    autocomplete: "email",
+                    class: "input",
+                    value:
+                      (
+                        if resource.pending_reconfirmation?
+                          resource.unconfirmed_email
+                        else
+                          resource.email
+                        end
+                      ) %>
+    </div>
+    <div class="actions py-2">
+      <%= f.submit "Resend confirmation instructions",
+               class: "button is-link is-fullwidth" %>
+    </div>
+    <%= render "devise/shared/error_messages", resource: resource %>
+  <% end %>
+  <div class="mt-5">
+    <%= link_to "Back", new_session_path(resource_name) %>
   </div>
-</div>
+<% end %>

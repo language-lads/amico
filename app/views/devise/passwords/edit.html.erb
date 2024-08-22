@@ -1,30 +1,32 @@
-<div class="hero-body">
-  <div class="container">
-    <h2>Change your password</h2>
+<%= render "devise/shared/layout" do %>
+  <h3 class="title is-3 pb-3">Change your password</h3>
+  <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
+    <%= f.hidden_field :reset_password_token %>
+    <div class="field">
+      <%= f.label :password, "New password" %><br/>
+      <% if @minimum_password_length %>
+        <em>(<%= @minimum_password_length %>
+          characters minimum)</em><br/>
+      <% end %>
+      <%= f.password_field :password,
+                       autofocus: true,
+                       autocomplete: "new-password",
+                       class: "input" %>
+    </div>
 
-    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
-      <%= render "devise/shared/error_messages", resource: resource %>
-      <%= f.hidden_field :reset_password_token %>
+    <div class="field py-2">
+      <%= f.label :password_confirmation, "Confirm new password" %><br/>
+      <%= f.password_field :password_confirmation,
+                       autocomplete: "new-password",
+                       class: "input" %>
+    </div>
 
-      <div class="field">
-        <%= f.label :password, "New password" %><br/>
-        <% if @minimum_password_length %>
-          <em>(<%= @minimum_password_length %>
-            characters minimum)</em><br/>
-        <% end %>
-        <%= f.password_field :password, autofocus: true, autocomplete: "new-password" %>
-      </div>
-
-      <div class="field">
-        <%= f.label :password_confirmation, "Confirm new password" %><br/>
-        <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
-      </div>
-
-      <div class="actions">
-        <%= f.submit "Change my password" %>
-      </div>
-    <% end %>
-
-    <%= render "devise/shared/links" %>
+    <div class="actions py-2">
+      <%= f.submit "Change my password", class: "button is-link is-fullwidth" %>
+    </div>
+    <%= render "devise/shared/error_messages", resource: resource %>
+  <% end %>
+  <div class="mt-5">
+    <%= link_to "Log in", new_session_path(resource_name) %>
   </div>
-</div>
+<% end %>
