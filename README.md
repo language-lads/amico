@@ -54,3 +54,17 @@ dokku config:set RAILS_MASTER_KEY=$(cat config/master.key)
 dokku letsencrypt:enable amico
 git push dokku main
 ```
+
+### Very cool demo
+
+It might be possible to run whisper as a dockerized server using [faster-whisper-server](https://github.com/fedirz/faster-whisper-server).
+
+Run the following commands in separate terminals:
+
+```bash
+# Start the faster-whisper-server on port 8000
+docker run -p 8000:8000 --volume ~/.cache/huggingface:/root/.cache/huggingface --env WHISPER__MODEL=Systran/faster-whisper-tiny fedirz/faster-whisper-server:latest-cpu
+
+# Stream audio from the microphone to the faster-whisper-server via a websocket connection
+ffmpeg -f avfoundation -i ":0" -acodec pcm_s16le -ar 16000 -ac 1 -f s16le -loglevel quiet - | websocat --no-close --binary 'ws://localhost:8000/v1/audio/transcriptions?language=en'
+```
