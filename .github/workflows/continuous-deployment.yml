@@ -9,12 +9,20 @@ jobs:
   run_tests:
     uses: ./.github/workflows/run_tests.yml
     secrets: inherit
-  deploy_to_heroku:
+  deploy_to_dokku:
     needs: run_tests
     runs-on: "ubuntu-22.04"
     steps:
       - name: "Checkout code"
         uses: "actions/checkout@v4"
+        with:
+          fetch-depth: 0
 
-      - name: "Deploy to Dokku"
-        run: "echo TODO"
+      - name: Push to dokku
+        uses: dokku/github-action@master
+        with:
+          branch: "main"
+          # We need to force push if the app has been previously pushed manually from a location other than CI to avoid errors
+          git_push_flags: "--force"
+          git_remote_url: "ssh://dokku@language-lads.com:22/amico"
+          ssh_private_key: ${{ secrets.DOKKU_SSH_PRIVATE_KEY }}
