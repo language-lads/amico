@@ -23,7 +23,7 @@
         <td><%= user.sign_in_count %></td>
         <td><%= local_time(user.last_sign_in_at, :long) if user.last_sign_in_at %></td>
         <td><%= user.provider %></td>
-        <td><%= local_time(user.confirmed_at, :long) %></td>
+        <td><%= local_time(user.confirmed_at, :long) if user.confirmed_at %></td>
         <td><%= user.language %></td>
         <td><%= user.admin %></td>
         <td>
