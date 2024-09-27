@@ -98,7 +98,7 @@ Rails.application.configure do
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 
   # Mail setup
-  config.action_mailer.default_url_options = { host: 'amico.tombarone.net' }
+  config.action_mailer.default_url_options = { host: 'amico.language-lads.com' }
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     address: 'smtp.gmail.com',
